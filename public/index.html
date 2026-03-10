@@ -17,104 +17,109 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:12
 body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,255,136,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,136,.02) 1px,transparent 1px);background-size:32px 32px;pointer-events:none;z-index:0}
 .layout{display:grid;grid-template-columns:200px 1fr;min-height:100vh;position:relative;z-index:1}
 .sidebar{border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
-.logo{font-family:var(--display);font-size:15px;font-weight:900;padding:24px 20px;border-bottom:1px solid var(--border);letter-spacing:-0.5px}
+.logo{font-family:var(--display);font-size:15px;font-weight:900;padding:20px;border-bottom:1px solid var(--border);letter-spacing:-0.5px;display:flex;justify-content:space-between;align-items:center}
 .logo span{color:var(--accent)}
-.nav-section{padding:16px 20px 6px;font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--muted)}
+.logout-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:10px;font-family:var(--mono)}
+.logout-btn:hover{color:var(--red)}
+.nav-section{padding:14px 20px 4px;font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--muted)}
 .nav-item{padding:8px 20px;cursor:pointer;color:var(--muted2);transition:all .15s;border-left:2px solid transparent;font-size:11px;display:flex;align-items:center;gap:8px}
 .nav-item:hover{color:var(--text);background:rgba(255,255,255,.02)}
 .nav-item.active{color:var(--accent);border-left-color:var(--accent);background:rgba(0,255,136,.04)}
 .nav-item .dot{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0}
 .pulse{animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.main{padding:28px;overflow-y:auto;max-height:100vh}
+.main{padding:24px;overflow-y:auto;max-height:100vh}
 .page{display:none}
 .page.active{display:block;animation:fadeIn .2s ease}
 @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
-.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
-.page-title{font-family:var(--display);font-size:18px;font-weight:700;letter-spacing:-0.5px}
-.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:20px}
-.card{background:var(--surface);border:1px solid var(--border);padding:16px;position:relative;overflow:hidden}
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.page-title{font-family:var(--display);font-size:16px;font-weight:700;letter-spacing:-0.5px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-bottom:16px}
+.card{background:var(--surface);border:1px solid var(--border);padding:14px;position:relative;overflow:hidden}
 .card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px}
 .card.g::after{background:var(--accent)}.card.r::after{background:var(--red)}.card.b::after{background:var(--blue)}.card.y::after{background:var(--yellow)}.card.p::after{background:var(--purple)}
-.card-label{color:var(--muted2);font-size:9px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
-.card-val{font-family:var(--display);font-size:24px;font-weight:700;line-height:1}
+.card-label{color:var(--muted2);font-size:9px;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.card-val{font-family:var(--display);font-size:22px;font-weight:700;line-height:1}
 .card.g .card-val{color:var(--accent)}.card.r .card-val{color:var(--red)}.card.b .card-val{color:var(--blue)}.card.y .card-val{color:var(--yellow)}.card.p .card-val{color:var(--purple)}
-.filter-bar{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.filter-bar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
 .filter-label{color:var(--muted2);font-size:10px;text-transform:uppercase;letter-spacing:1px}
-.tbl-wrap{background:var(--surface);border:1px solid var(--border);overflow:hidden;margin-bottom:0}
-.tbl-head{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.tbl-wrap{background:var(--surface);border:1px solid var(--border);overflow:hidden;margin-bottom:12px}
+.tbl-head{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px}
 .tbl-head-title{font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted2)}
 table{width:100%;border-collapse:collapse}
-th{text-align:left;padding:8px 16px;font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);border-bottom:1px solid var(--border);font-weight:600;white-space:nowrap}
-td{padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.03);font-size:11px;vertical-align:middle}
+th{text-align:left;padding:7px 14px;font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);border-bottom:1px solid var(--border);font-weight:600;white-space:nowrap}
+td{padding:9px 14px;border-bottom:1px solid rgba(255,255,255,.03);font-size:11px;vertical-align:middle}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:rgba(255,255,255,.015)}
-.empty{padding:32px;text-align:center;color:var(--muted);font-size:11px}
+.empty{padding:28px;text-align:center;color:var(--muted);font-size:11px}
 .badge{display:inline-block;padding:2px 7px;font-size:9px;font-weight:700;letter-spacing:.5px}
 .badge-bot{background:rgba(255,51,85,.15);color:var(--red)}
 .badge-human{background:rgba(0,255,136,.1);color:var(--accent)}
-.btn{background:var(--accent);color:#000;border:none;font-family:var(--mono);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:8px 16px;cursor:pointer;transition:opacity .15s}
+.btn{background:var(--accent);color:#000;border:none;font-family:var(--mono);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:8px 14px;cursor:pointer;transition:opacity .15s}
 .btn:hover{opacity:.85}
 .btn.secondary{background:transparent;border:1px solid var(--border);color:var(--muted2)}
 .btn.secondary:hover{border-color:var(--accent);color:var(--accent)}
-.btn-icon{background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;padding:4px 6px;transition:color .15s;font-family:var(--mono)}
+.btn.danger{background:transparent;border:1px solid var(--red);color:var(--red)}
+.btn.danger:hover{background:var(--red);color:#fff}
+.btn-icon{background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;padding:3px 5px;transition:color .15s;font-family:var(--mono)}
 .btn-icon:hover{color:var(--accent)}
 .btn-icon.del:hover{color:var(--red)}
 .acc-row{cursor:pointer}
 .acc-row:hover td{background:rgba(0,255,136,.03) !important}
 .acc-detail{display:none;background:var(--surface2)}
 .acc-detail.open{display:table-row}
-.acc-detail td{padding:12px 16px;border-bottom:1px solid var(--border)}
-.acc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
-.acc-item{background:var(--bg);border:1px solid var(--border);padding:10px 12px}
-.acc-item-label{font-size:9px;color:var(--muted2);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.acc-detail td{padding:10px 14px;border-bottom:1px solid var(--border)}
+.acc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:6px}
+.acc-item{background:var(--bg);border:1px solid var(--border);padding:8px 10px}
+.acc-item-label{font-size:9px;color:var(--muted2);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}
 .acc-item-value{font-size:11px;word-break:break-all;color:var(--text)}
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:100;display:none;align-items:center;justify-content:center}
 .modal-overlay.open{display:flex}
-.modal{background:var(--surface);border:1px solid var(--border);padding:24px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;animation:fadeIn .2s ease}
-.modal-title{font-family:var(--display);font-size:14px;font-weight:700;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center}
+.modal{background:var(--surface);border:1px solid var(--border);padding:22px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;animation:fadeIn .2s ease}
+.modal-title{font-family:var(--display);font-size:13px;font-weight:700;margin-bottom:18px;display:flex;justify-content:space-between;align-items:center}
 .modal-close{background:none;border:none;color:var(--muted2);cursor:pointer;font-size:16px;font-family:var(--mono)}
 .modal-close:hover{color:var(--red)}
-.form-grid{display:grid;gap:12px}
-.field{display:flex;flex-direction:column;gap:5px}
+.form-grid{display:grid;gap:10px}
+.field{display:flex;flex-direction:column;gap:4px}
 label{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--muted2)}
-input,select,textarea{background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:12px;padding:8px 12px;outline:none;transition:border-color .15s;width:100%}
+input,select,textarea{background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:12px;padding:8px 10px;outline:none;transition:border-color .15s;width:100%}
 input:focus,select:focus,textarea:focus{border-color:var(--accent)}
 textarea{resize:vertical;min-height:80px}
 .form-actions{display:flex;gap:8px;margin-top:4px}
-.msg{padding:8px 12px;font-size:11px;margin-top:8px;display:none}
+.msg{padding:7px 10px;font-size:11px;margin-top:6px;display:none}
 .msg.ok{background:rgba(0,255,136,.08);color:var(--accent);border-left:2px solid var(--accent)}
 .msg.err{background:rgba(255,51,85,.08);color:var(--red);border-left:2px solid var(--red)}
-.toast{position:fixed;bottom:20px;right:20px;background:var(--accent);color:#000;font-family:var(--mono);font-size:11px;font-weight:700;padding:8px 16px;opacity:0;transform:translateY(8px);transition:all .2s;pointer-events:none;z-index:999}
+.toast{position:fixed;bottom:16px;right:16px;background:var(--accent);color:#000;font-family:var(--mono);font-size:11px;font-weight:700;padding:8px 14px;opacity:0;transform:translateY(6px);transition:all .2s;pointer-events:none;z-index:999}
 .toast.show{opacity:1;transform:translateY(0)}
 .toast.err-toast{background:var(--red);color:#fff}
-.section-gap{margin-top:16px}
-.text-muted{color:var(--muted2)}
-.text-accent{color:var(--accent)}
-.text-red{color:var(--red)}
-.text-blue{color:var(--blue)}
-.text-yellow{color:var(--yellow)}
-.copy-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:10px;font-family:var(--mono);padding:2px 4px;transition:color .15s}
-.copy-btn:hover{color:var(--accent)}
-.tabs{display:flex;gap:0;margin-bottom:16px;border-bottom:1px solid var(--border)}
-.tab{padding:8px 16px;cursor:pointer;color:var(--muted2);font-size:10px;text-transform:uppercase;letter-spacing:1px;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
+.tabs{display:flex;gap:0;margin-bottom:12px;border-bottom:1px solid var(--border)}
+.tab{padding:7px 14px;cursor:pointer;color:var(--muted2);font-size:10px;text-transform:uppercase;letter-spacing:1px;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
 .tab:hover{color:var(--text)}
 .tab.active{color:var(--accent);border-bottom-color:var(--accent)}
 .tab-content{display:none}
 .tab-content.active{display:block}
-.tds-toggle{display:flex;align-items:center;gap:10px;padding:12px;background:var(--bg);border:1px solid var(--border);margin-bottom:8px}
-.toggle{position:relative;width:36px;height:20px;cursor:pointer}
+.tds-toggle{display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg);border:1px solid var(--border)}
+.toggle{position:relative;width:34px;height:18px;cursor:pointer;flex-shrink:0}
 .toggle input{opacity:0;width:0;height:0}
-.toggle-slider{position:absolute;inset:0;background:var(--border);transition:.3s;border-radius:20px}
+.toggle-slider{position:absolute;inset:0;background:var(--border);transition:.3s;border-radius:18px}
 .toggle input:checked + .toggle-slider{background:var(--accent)}
-.toggle-slider::before{content:'';position:absolute;width:14px;height:14px;left:3px;bottom:3px;background:white;transition:.3s;border-radius:50%}
+.toggle-slider::before{content:'';position:absolute;width:12px;height:12px;left:3px;bottom:3px;background:white;transition:.3s;border-radius:50%}
 .toggle input:checked + .toggle-slider::before{transform:translateX(16px)}
+.copy-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:10px;font-family:var(--mono);padding:2px 4px;transition:color .15s}
+.copy-btn:hover{color:var(--accent)}
+code{color:var(--accent);font-family:var(--mono);font-size:10px}
+.info-row{display:flex;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:11px}
+.info-row:last-child{border-bottom:none}
+.info-label{color:var(--muted2);width:130px;flex-shrink:0;font-size:10px}
 </style>
 </head>
 <body>
 <div class="layout">
 <aside class="sidebar">
-  <div class="logo">TRK<span>.</span>KR</div>
+  <div class="logo">
+    TRK<span>.</span>KR
+    <button class="logout-btn" onclick="logout()">выйти</button>
+  </div>
   <div class="nav-section">Аналитика</div>
   <div class="nav-item active" onclick="nav('dashboard',this)"><span class="dot pulse" style="color:var(--accent)"></span>Dashboard</div>
   <div class="nav-item" onclick="nav('clicks',this)"><span class="dot"></span>Клики</div>
@@ -194,14 +199,12 @@ textarea{resize:vertical;min-height:80px}
   </div>
   <div id="leads-summary" class="tab-content active">
     <div class="tbl-wrap">
-      <div class="tbl-head"><span class="tbl-head-title">По потокам</span></div>
       <table><thead><tr><th>Поток</th><th>Лидов</th><th>Доход $</th></tr></thead>
       <tbody id="leads-table"></tbody></table>
     </div>
   </div>
   <div id="leads-log" class="tab-content">
     <div class="tbl-wrap">
-      <div class="tbl-head"><span class="tbl-head-title">Все лиды</span></div>
       <table><thead><tr><th>▶</th><th>Время</th><th>Поток</th><th>Креатив</th><th>Сумма</th><th>Статус</th></tr></thead>
       <tbody id="leads-log-table"></tbody></table>
     </div>
@@ -213,13 +216,14 @@ textarea{resize:vertical;min-height:80px}
   <div class="page-header">
     <div class="page-title">Потоки</div>
     <div style="display:flex;gap:8px">
+      <button class="btn secondary" onclick="copyAllLinks()">⎘ Все ссылки</button>
       <button class="btn secondary" onclick="openModal('modal-bulk-stream')">+ Массово</button>
       <button class="btn" onclick="openModal('modal-stream')">+ Создать</button>
     </div>
   </div>
   <div class="tbl-wrap">
     <div class="tbl-head"><span class="tbl-head-title">Все потоки</span><button class="btn secondary" onclick="loadStreams()">↻</button></div>
-    <table><thead><tr><th>ID</th><th>Название</th><th>Категория</th><th>Режим</th><th>Ссылка</th><th>Создан</th><th></th></tr></thead>
+    <table><thead><tr><th>Slug</th><th>Название</th><th>Категория</th><th>Режим</th><th>Ссылка</th><th>Создан</th><th></th></tr></thead>
     <tbody id="streams-table"></tbody></table>
   </div>
 </div>
@@ -235,7 +239,7 @@ textarea{resize:vertical;min-height:80px}
   </div>
   <div class="tbl-wrap">
     <div class="tbl-head"><span class="tbl-head-title">Все креативы + статистика</span><button class="btn secondary" onclick="loadCreatives()">↻</button></div>
-    <table><thead><tr><th>ID</th><th>Название</th><th>Категория</th><th>Кликов</th><th>Реальных</th><th>Лидов</th><th>Доход</th><th>Ссылка</th><th></th></tr></thead>
+    <table><thead><tr><th>ID</th><th>Название</th><th>Категория</th><th>Кликов</th><th>Реальных</th><th>Лидов</th><th>Доход</th><th>URL</th><th></th></tr></thead>
     <tbody id="creatives-table"></tbody></table>
   </div>
 </div>
@@ -246,9 +250,9 @@ textarea{resize:vertical;min-height:80px}
     <div class="page-title">Категории</div>
     <button class="btn" onclick="openModal('modal-category')">+ Создать</button>
   </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
     <div class="tbl-wrap">
-      <div class="tbl-head"><span class="tbl-head-title">Группы (источники трафика)</span></div>
+      <div class="tbl-head"><span class="tbl-head-title">Группы (трафик)</span></div>
       <table><thead><tr><th>Название</th><th>Создана</th><th></th></tr></thead><tbody id="cat-group-table"></tbody></table>
     </div>
     <div class="tbl-wrap">
@@ -261,17 +265,60 @@ textarea{resize:vertical;min-height:80px}
 <!-- SETTINGS -->
 <div id="page-settings" class="page">
   <div class="page-header"><div class="page-title">Настройки</div></div>
-  <div class="tbl-wrap" style="max-width:560px">
-    <div class="tbl-head"><span class="tbl-head-title">Постбек URL</span></div>
-    <table><tbody>
-      <tr><td class="text-muted">Шаблон</td><td><code id="postback-url" style="color:var(--accent);font-size:10px"></code> <button class="copy-btn" onclick="copyText(document.getElementById('postback-url').textContent)">⎘</button></td></tr>
-      <tr><td class="text-muted">Параметры</td><td class="text-muted" style="font-size:10px">click_id — обязательный, payout — сумма, status — статус</td></tr>
-    </tbody></table>
+
+  <div class="tbl-wrap" style="max-width:600px;margin-bottom:16px">
+    <div class="tbl-head"><span class="tbl-head-title">Домен</span></div>
+    <div style="padding:16px;display:grid;gap:12px">
+      <div class="field">
+        <label>Домен (без https://)</label>
+        <input id="set-domain" placeholder="tracker.example.com">
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn" onclick="saveDomain()">Сохранить домен</button>
+        <button class="btn secondary" onclick="clearDomain()">Очистить</button>
+      </div>
+      <div style="color:var(--muted2);font-size:10px;line-height:1.6">
+        После сохранения домена все ссылки потоков будут вида:<br>
+        <code id="domain-example">https://ваш-домен/track/slug</code>
+      </div>
+      <div id="domain-msg" class="msg"></div>
+    </div>
   </div>
-  <div class="section-gap"></div>
-  <div class="tbl-wrap" style="max-width:560px">
-    <div class="tbl-head"><span class="tbl-head-title">Сигнатуры ботов</span><button class="btn" onclick="openModal('modal-signature')">+ Добавить</button></div>
-    <table><thead><tr><th>Сигнатура</th><th>Тип</th><th></th></tr></thead><tbody id="sig-table"></tbody></table>
+
+  <div class="tbl-wrap" style="max-width:600px;margin-bottom:16px">
+    <div class="tbl-head"><span class="tbl-head-title">SSL сертификат</span></div>
+    <div style="padding:16px;display:grid;gap:10px">
+      <div style="color:var(--muted2);font-size:10px;line-height:1.8">
+        Выполни на сервере чтобы выпустить SSL:
+      </div>
+      <div style="background:var(--bg);border:1px solid var(--border);padding:12px">
+        <code style="display:block;line-height:2;font-size:10px;color:var(--accent)">
+          sudo apt install certbot nginx -y<br>
+          sudo certbot --nginx -d ВАШ_ДОМЕН<br>
+          sudo systemctl reload nginx
+        </code>
+      </div>
+      <div style="color:var(--muted2);font-size:10px;line-height:1.8">
+        Nginx конфиг (<code>/etc/nginx/sites-available/tracker</code>):
+      </div>
+      <div style="background:var(--bg);border:1px solid var(--border);padding:12px">
+        <code id="nginx-conf" style="display:block;line-height:1.8;font-size:10px;color:var(--muted2);white-space:pre"></code>
+      </div>
+      <button class="btn secondary" style="width:fit-content" onclick="copyNginx()">⎘ Скопировать конфиг</button>
+    </div>
+  </div>
+
+  <div class="tbl-wrap" style="max-width:600px;margin-bottom:16px">
+    <div class="tbl-head"><span class="tbl-head-title">Постбек URL</span></div>
+    <div style="padding:12px 16px">
+      <div class="info-row"><div class="info-label">Шаблон:</div><code id="postback-url"></code> <button class="copy-btn" onclick="copyText(document.getElementById('postback-url').textContent)">⎘</button></div>
+      <div class="info-row"><div class="info-label">Параметры:</div><span style="color:var(--muted2);font-size:10px">click_id — обязательный, payout — сумма, status — статус</span></div>
+    </div>
+  </div>
+
+  <div class="tbl-wrap" style="max-width:600px">
+    <div class="tbl-head"><span class="tbl-head-title">Сигнатуры ботов (User-Agent)</span><button class="btn" onclick="openModal('modal-signature')">+ Добавить</button></div>
+    <table><thead><tr><th>Сигнатура</th><th></th></tr></thead><tbody id="sig-table"></tbody></table>
   </div>
 </div>
 
@@ -286,15 +333,16 @@ textarea{resize:vertical;min-height:80px}
       <div class="field"><label>Название</label><input id="sn-name" placeholder="Группа ВК Дача #1"></div>
       <div class="field"><label>Категория потока (группы)</label><select id="sn-cat"><option value="">— без категории —</option></select></div>
       <div class="tds-toggle">
-        <label class="toggle"><input type="checkbox" id="sn-tds" onchange="toggleTdsMode('sn')"><span class="toggle-slider"></span></label>
-        <span style="font-size:11px">TDS режим — рандомный креатив из категории</span>
+        <label class="toggle"><input type="checkbox" id="sn-tds" onchange="toggleTds('sn')"><span class="toggle-slider"></span></label>
+        <span style="font-size:11px">TDS — рандомный креатив из категории</span>
       </div>
-      <div id="sn-direct-fields">
-        <div class="field"><label>Целевой URL</label><input id="sn-url" placeholder="https://offer.com/landing"></div>
+      <div id="sn-direct">
+        <div class="field"><label>Целевой URL</label><input id="sn-url" placeholder="https://offer.com/land"></div>
       </div>
-      <div id="sn-tds-fields" style="display:none">
+      <div id="sn-tds-block" style="display:none">
         <div class="field"><label>Категория креативов для TDS</label><select id="sn-tds-cat"><option value="">— выберите —</option></select></div>
       </div>
+      <div class="field"><label>Редирект для повторных визитов (по умолчанию google.com)</label><input id="sn-fallback" placeholder="https://google.com"></div>
       <div class="field"><label>UTM Source</label><input id="sn-source" placeholder="vk"></div>
       <div class="field"><label>UTM Medium</label><input id="sn-medium" placeholder="organic"></div>
       <div class="field"><label>UTM Campaign</label><input id="sn-campaign"></div>
@@ -312,15 +360,16 @@ textarea{resize:vertical;min-height:80px}
       <div class="field"><label>Название</label><input id="es-name"></div>
       <div class="field"><label>Категория потока</label><select id="es-cat"><option value="">— без категории —</option></select></div>
       <div class="tds-toggle">
-        <label class="toggle"><input type="checkbox" id="es-tds" onchange="toggleTdsMode('es')"><span class="toggle-slider"></span></label>
+        <label class="toggle"><input type="checkbox" id="es-tds" onchange="toggleTds('es')"><span class="toggle-slider"></span></label>
         <span style="font-size:11px">TDS режим</span>
       </div>
-      <div id="es-direct-fields">
+      <div id="es-direct">
         <div class="field"><label>Целевой URL</label><input id="es-url"></div>
       </div>
-      <div id="es-tds-fields" style="display:none">
+      <div id="es-tds-block" style="display:none">
         <div class="field"><label>Категория креативов для TDS</label><select id="es-tds-cat"><option value="">— выберите —</option></select></div>
       </div>
+      <div class="field"><label>Редирект для повторных визитов</label><input id="es-fallback" placeholder="https://google.com"></div>
       <div class="field"><label>UTM Source</label><input id="es-source"></div>
       <div class="field"><label>UTM Medium</label><input id="es-medium"></div>
       <div class="field"><label>UTM Campaign</label><input id="es-campaign"></div>
@@ -336,19 +385,20 @@ textarea{resize:vertical;min-height:80px}
     <div class="form-grid">
       <div class="field"><label>Категория потоков</label><select id="bs-cat"><option value="">— без категории —</option></select></div>
       <div class="tds-toggle">
-        <label class="toggle"><input type="checkbox" id="bs-tds" onchange="toggleTdsMode('bs')"><span class="toggle-slider"></span></label>
-        <span style="font-size:11px">TDS режим для всех потоков</span>
+        <label class="toggle"><input type="checkbox" id="bs-tds" onchange="toggleTds('bs')"><span class="toggle-slider"></span></label>
+        <span style="font-size:11px">TDS режим для всех</span>
       </div>
-      <div id="bs-direct-fields">
-        <div class="field"><label>Целевой URL (для всех)</label><input id="bs-url" placeholder="https://offer.com/landing"></div>
+      <div id="bs-direct">
+        <div class="field"><label>Целевой URL (для всех)</label><input id="bs-url" placeholder="https://offer.com/land"></div>
       </div>
-      <div id="bs-tds-fields" style="display:none">
+      <div id="bs-tds-block" style="display:none">
         <div class="field"><label>Категория креативов для TDS</label><select id="bs-tds-cat"><option value="">— выберите —</option></select></div>
       </div>
+      <div class="field"><label>Редирект для повторных</label><input id="bs-fallback" placeholder="https://google.com"></div>
       <div class="field"><label>UTM Source</label><input id="bs-source" placeholder="vk"></div>
       <div class="field"><label>UTM Medium</label><input id="bs-medium" placeholder="organic"></div>
       <div class="field"><label>UTM Campaign</label><input id="bs-campaign"></div>
-      <div class="field"><label>Названия потоков (каждая строка = 1 поток)</label><textarea id="bs-names" placeholder="Группа Дача #1&#10;Группа Огород #2&#10;Группа Сад #3" style="min-height:120px"></textarea></div>
+      <div class="field"><label>Названия потоков (каждая строка = 1 поток)</label><textarea id="bs-names" placeholder="Группа Дача #1&#10;Группа Огород #2&#10;Группа Сад #3" style="min-height:100px"></textarea></div>
       <div class="form-actions"><button class="btn" onclick="bulkCreateStreams()">Создать все</button><button class="btn secondary" onclick="closeModal('modal-bulk-stream')">Отмена</button></div>
       <div id="bs-msg" class="msg"></div>
     </div>
@@ -359,11 +409,11 @@ textarea{resize:vertical;min-height:80px}
   <div class="modal">
     <div class="modal-title">Добавить креатив <button class="modal-close" onclick="closeModal('modal-creative')">✕</button></div>
     <div class="form-grid">
-      <div class="field"><label>Название</label><input id="cr-name" placeholder="Крео Собаки #1"></div>
-      <div class="field"><label>URL лендинга в ПП</label><input id="cr-url" placeholder="https://pp.com/land?offer=123"></div>
+      <div class="field"><label>Название</label><input id="cr-name" placeholder="Крео #1"></div>
+      <div class="field"><label>URL лендинга</label><input id="cr-url" placeholder="https://pp.com/land?offer=1"></div>
       <div class="field"><label>Категория</label><select id="cr-cat"><option value="">— без категории —</option></select></div>
-      <div class="field"><label>UTM Source</label><input id="cr-source" placeholder="vk"></div>
-      <div class="field"><label>UTM Medium</label><input id="cr-medium" placeholder="creative"></div>
+      <div class="field"><label>UTM Source</label><input id="cr-source"></div>
+      <div class="field"><label>UTM Medium</label><input id="cr-medium"></div>
       <div class="field"><label>UTM Campaign</label><input id="cr-campaign"></div>
       <div class="form-actions"><button class="btn" onclick="createCreative()">Добавить</button><button class="btn secondary" onclick="closeModal('modal-creative')">Отмена</button></div>
       <div id="cr-msg" class="msg"></div>
@@ -373,10 +423,10 @@ textarea{resize:vertical;min-height:80px}
 
 <div class="modal-overlay" id="modal-bulk-creative">
   <div class="modal">
-    <div class="modal-title">Массовое добавление креативов <button class="modal-close" onclick="closeModal('modal-bulk-creative')">✕</button></div>
+    <div class="modal-title">Массово добавить креативы <button class="modal-close" onclick="closeModal('modal-bulk-creative')">✕</button></div>
     <div class="form-grid">
       <div class="field"><label>Категория для всех</label><select id="bc-cat"><option value="">— без категории —</option></select></div>
-      <div class="field"><label>Список (каждая строка: URL;Название — название необязательно)</label><textarea id="bc-list" placeholder="https://pp.com/land?a=1;Крео Собаки&#10;https://pp.com/land?a=2;Крео Кошки&#10;https://pp.com/land?a=3" style="min-height:140px"></textarea></div>
+      <div class="field"><label>Список (каждая строка: URL;Название — название необязательно)</label><textarea id="bc-list" placeholder="https://pp.com/land?a=1;Крео Собаки&#10;https://pp.com/land?a=2;Крео Кошки&#10;https://pp.com/land?a=3" style="min-height:120px"></textarea></div>
       <div class="form-actions"><button class="btn" onclick="bulkCreateCreatives()">Создать все</button><button class="btn secondary" onclick="closeModal('modal-bulk-creative')">Отмена</button></div>
       <div id="bc-msg" class="msg"></div>
     </div>
@@ -399,8 +449,7 @@ textarea{resize:vertical;min-height:80px}
   <div class="modal">
     <div class="modal-title">Добавить сигнатуру бота <button class="modal-close" onclick="closeModal('modal-signature')">✕</button></div>
     <div class="form-grid">
-      <div class="field"><label>Сигнатура (часть user-agent или IP)</label><input id="sig-value" placeholder="googlebot"></div>
-      <div class="field"><label>Тип</label><select id="sig-type"><option value="ua">User-Agent</option><option value="ip">IP адрес</option></select></div>
+      <div class="field"><label>Строка (часть user-agent)</label><input id="sig-value" placeholder="googlebot"></div>
       <div class="form-actions"><button class="btn" onclick="addSignature()">Добавить</button><button class="btn secondary" onclick="closeModal('modal-signature')">Отмена</button></div>
     </div>
   </div>
@@ -409,10 +458,13 @@ textarea{resize:vertical;min-height:80px}
 <div class="toast" id="toast"></div>
 
 <script>
-const API = 'http://localhost:3000'
+const API = ''
 let allStreams = []
 let allCategories = []
+let currentDomain = ''
 let signatures = JSON.parse(localStorage.getItem('bot_signatures') || '[]')
+
+async function logout() { window.location.href = '/logout' }
 
 function nav(page, el) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'))
@@ -444,31 +496,26 @@ function toast(msg, err) {
 
 function copyText(text) { navigator.clipboard.writeText(text); toast('Скопировано!') }
 
+function getBaseUrl() {
+  return currentDomain ? `https://${currentDomain}` : window.location.origin
+}
+
 function fmt(dt) {
   if (!dt) return '—'
   try { return new Date(dt.includes('T') ? dt : dt + 'Z').toLocaleString('ru-RU', {hour12:false}) } catch(e) { return dt }
 }
 
-function dateFilter(period) {
-  const now = new Date()
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
-  if (period === 'today') return today.toISOString().split('T')[0]
-  if (period === 'yesterday') { const y = new Date(today); y.setDate(y.getDate()-1); return y.toISOString().split('T')[0] }
-  if (period === '7') { const d = new Date(today); d.setDate(d.getDate()-7); return d.toISOString().split('T')[0] }
-  if (period === '30') { const d = new Date(today); d.setDate(d.getDate()-30); return d.toISOString().split('T')[0] }
-  return null
-}
-
-function showMsg(el, type, text) {
+function showMsg(id, type, text) {
+  const el = document.getElementById(id)
   el.className = 'msg ' + (type === 'ok' ? 'ok' : 'err')
   el.textContent = text
   el.style.display = 'block'
 }
 
-function toggleTdsMode(prefix) {
+function toggleTds(prefix) {
   const checked = document.getElementById(`${prefix}-tds`).checked
-  document.getElementById(`${prefix}-direct-fields`).style.display = checked ? 'none' : 'block'
-  document.getElementById(`${prefix}-tds-fields`).style.display = checked ? 'block' : 'none'
+  document.getElementById(`${prefix}-direct`).style.display = checked ? 'none' : 'block'
+  document.getElementById(`${prefix}-tds-block`).style.display = checked ? 'block' : 'none'
 }
 
 async function populateCategorySelects() {
@@ -504,7 +551,6 @@ async function loadDashboard() {
   const period = document.getElementById('dash-period').value
   const streamFilter = document.getElementById('dash-stream').value
   const groupBy = document.getElementById('dash-group').value
-  const since = dateFilter(period)
 
   try {
     const [clicksRaw, leadsRaw, streams] = await Promise.all([
@@ -516,14 +562,28 @@ async function loadDashboard() {
     populateCategorySelects()
 
     let clicks = clicksRaw
-    if (since) clicks = clicks.filter(c => c.created_at && c.created_at >= since)
+    const now = new Date()
+    if (period === 'today') {
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString().split('T')[0]
+      clicks = clicks.filter(c => c.created_at >= today)
+    } else if (period === 'yesterday') {
+      const y = new Date(now); y.setDate(y.getDate()-1)
+      const ys = y.toISOString().split('T')[0]
+      const today = now.toISOString().split('T')[0]
+      clicks = clicks.filter(c => c.created_at >= ys && c.created_at < today)
+    } else if (period === '7' || period === '30') {
+      const d = new Date(now); d.setDate(d.getDate() - parseInt(period))
+      const ds = d.toISOString().split('T')[0]
+      clicks = clicks.filter(c => c.created_at >= ds)
+    }
     if (streamFilter !== 'all') clicks = clicks.filter(c => c.stream_id == streamFilter)
 
     const byKey = {}
     clicks.forEach(c => {
-      const key = groupBy === 'creative' ? (c.creative_id || 'no-creative') : c.stream_id
+      const key = groupBy === 'creative' ? (c.creative_id || 'none') : c.stream_id
       const name = groupBy === 'creative' ? (c.creative_name || '— без креатива —') : c.stream_name
-      if (!byKey[key]) byKey[key] = {name, total:0, bots:0, real:0}
+      const catName = groupBy === 'stream' ? (streams.find(s => s.id == c.stream_id)?.category_name || '—') : ''
+      if (!byKey[key]) byKey[key] = {name, catName, total:0, bots:0, real:0}
       byKey[key].total++
       if (c.is_bot) byKey[key].bots++; else byKey[key].real++
     })
@@ -550,17 +610,22 @@ async function loadDashboard() {
       : '<th>Поток</th><th>Категория</th><th>Кликов</th><th>Реальных</th><th>Ботов</th><th>Лидов</th><th>Доход</th>'
 
     const rows = Object.values(byKey)
-    if (!rows.length) { tbody.innerHTML = `<tr><td colspan="7" class="empty">Нет данных за выбранный период</td></tr>`; return }
-
-    const streamMap = {}
-    streams.forEach(s => streamMap[s.id] = s)
+    if (!rows.length) { tbody.innerHTML = `<tr><td colspan="7" class="empty">Нет данных</td></tr>`; return }
 
     tbody.innerHTML = rows.map(s => {
       if (groupBy === 'creative') {
-        return `<tr><td>${s.name}</td><td class="text-accent">${s.total}</td><td style="color:var(--blue)">${s.real}</td><td class="text-red">${s.bots}</td></tr>`
+        return `<tr><td>${s.name}</td><td class="text-accent" style="color:var(--accent)">${s.total}</td><td style="color:var(--blue)">${s.real}</td><td style="color:var(--red)">${s.bots}</td></tr>`
       }
       const l = leadsMap[s.name] || {}
-      return `<tr><td>${s.name}</td><td class="text-muted">—</td><td class="text-accent">${s.total}</td><td style="color:var(--blue)">${s.real}</td><td class="text-red">${s.bots}</td><td>${l.total_leads||0}</td><td class="text-yellow">$${(l.total_payout||0).toFixed(2)}</td></tr>`
+      return `<tr>
+        <td>${s.name}</td>
+        <td style="color:var(--muted2)">${s.catName}</td>
+        <td style="color:var(--accent)">${s.total}</td>
+        <td style="color:var(--blue)">${s.real}</td>
+        <td style="color:var(--red)">${s.bots}</td>
+        <td>${l.total_leads||0}</td>
+        <td style="color:var(--yellow)">$${(l.total_payout||0).toFixed(2)}</td>
+      </tr>`
     }).join('')
   } catch(e) { console.error(e) }
 }
@@ -576,14 +641,14 @@ async function loadClicks() {
     if (!clicks.length) { tbody.innerHTML = `<tr><td colspan="8" class="empty">Нет кликов</td></tr>`; return }
     tbody.innerHTML = clicks.map(c => `
       <tr class="acc-row" onclick="toggleAcc('acc-${c.id}')">
-        <td style="color:var(--muted2);width:20px" id="arr-${c.id}">▶</td>
-        <td class="text-muted">${fmt(c.created_at)}</td>
+        <td style="color:var(--muted2);width:16px" id="arr-${c.id}">▶</td>
+        <td style="color:var(--muted2)">${fmt(c.created_at)}</td>
         <td><button class="copy-btn" onclick="event.stopPropagation();copyText('${c.uuid}')">${c.uuid.slice(0,8)}…</button></td>
         <td>${c.stream_name}</td>
-        <td class="text-muted">${c.creative_name||'—'}</td>
-        <td class="text-muted">${c.ip||'—'}</td>
+        <td style="color:var(--muted2)">${c.creative_name||'—'}</td>
+        <td style="color:var(--muted2)">${c.ip||'—'}</td>
         <td><span class="badge ${c.is_bot?'badge-bot':'badge-human'}">${c.is_bot?'БОТ':'ЧЕЛОВЕК'}</span></td>
-        <td>${!c.is_bot?`<button class="btn-icon del" onclick="event.stopPropagation();markBot(${c.id})" title="Пометить бот">🤖</button>`:''}</td>
+        <td>${!c.is_bot?`<button class="btn-icon del" onclick="event.stopPropagation();markBot(${c.id})">🤖</button>`:''}</td>
       </tr>
       <tr class="acc-detail" id="acc-${c.id}">
         <td colspan="8">
@@ -605,7 +670,7 @@ async function loadClicks() {
 function toggleAcc(id) {
   const row = document.getElementById(id)
   row.classList.toggle('open')
-  const arr = document.getElementById('arr-' + id.replace('acc-',''))
+  const arr = document.getElementById('arr-' + id.replace('acc-','').replace('lacc-',''))
   if (arr) arr.textContent = row.classList.contains('open') ? '▼' : '▶'
 }
 
@@ -621,7 +686,11 @@ async function loadLeads() {
     const leads = await fetch(`${API}/stats/leads`).then(r => r.json())
     const tbody = document.getElementById('leads-table')
     if (!leads.length) { tbody.innerHTML = `<tr><td colspan="3" class="empty">Нет лидов</td></tr>`; return }
-    tbody.innerHTML = leads.map(l => `<tr><td>${l.stream_name}</td><td class="text-accent">${l.total_leads}</td><td class="text-yellow">$${(l.total_payout||0).toFixed(2)}</td></tr>`).join('')
+    tbody.innerHTML = leads.map(l => `<tr>
+      <td>${l.stream_name}</td>
+      <td style="color:var(--accent)">${l.total_leads}</td>
+      <td style="color:var(--yellow)">$${(l.total_payout||0).toFixed(2)}</td>
+    </tr>`).join('')
   } catch(e) {}
 }
 
@@ -632,11 +701,11 @@ async function loadLeadsLog() {
     if (!leads.length) { tbody.innerHTML = `<tr><td colspan="6" class="empty">Нет лидов</td></tr>`; return }
     tbody.innerHTML = leads.map(l => `
       <tr class="acc-row" onclick="toggleAcc('lacc-${l.id}')">
-        <td style="color:var(--muted2);width:20px" id="arr-lacc-${l.id}">▶</td>
-        <td class="text-muted">${fmt(l.created_at)}</td>
+        <td style="color:var(--muted2);width:16px" id="arr-lacc-${l.id}">▶</td>
+        <td style="color:var(--muted2)">${fmt(l.created_at)}</td>
         <td>${l.stream_name}</td>
-        <td class="text-muted">${l.creative_name||'—'}</td>
-        <td class="text-yellow">$${(l.payout||0).toFixed(2)}</td>
+        <td style="color:var(--muted2)">${l.creative_name||'—'}</td>
+        <td style="color:var(--yellow)">$${(l.payout||0).toFixed(2)}</td>
         <td><span class="badge badge-human">${l.status||'approved'}</span></td>
       </tr>
       <tr class="acc-detail" id="lacc-${l.id}">
@@ -662,17 +731,17 @@ async function loadStreams() {
     await populateCategorySelects()
     const tbody = document.getElementById('streams-table')
     if (!streams.length) { tbody.innerHTML = `<tr><td colspan="7" class="empty">Нет потоков</td></tr>`; return }
+    const base = getBaseUrl()
     tbody.innerHTML = streams.map(s => {
-      const link = `${API}/track/${s.id}`
-      const catName = allCategories.find(c => c.id == s.category_id)?.name || '—'
+      const link = `${base}/track/${s.slug}`
       const mode = s.tds_category_id ? `<span style="color:var(--purple);font-size:9px">TDS</span>` : `<span style="color:var(--muted2);font-size:9px">Прямой</span>`
       return `<tr>
-        <td class="text-muted">${s.id}</td>
+        <td><code style="color:var(--accent)">${s.slug}</code></td>
         <td>${s.name}</td>
-        <td class="text-muted">${catName}</td>
+        <td style="color:var(--muted2)">${s.category_name||'—'}</td>
         <td>${mode}</td>
-        <td><button class="copy-btn" onclick="copyText('${link}')">/track/${s.id} ⎘</button></td>
-        <td class="text-muted">${fmt(s.created_at)}</td>
+        <td><button class="copy-btn" onclick="copyText('${link}')">${link} ⎘</button></td>
+        <td style="color:var(--muted2)">${fmt(s.created_at)}</td>
         <td>
           <button class="btn-icon" onclick='editStream(${JSON.stringify(s)})'>✎</button>
           <button class="btn-icon del" onclick="deleteStream(${s.id},'${s.name.replace(/'/g,"\\'")}')">✕</button>
@@ -682,39 +751,50 @@ async function loadStreams() {
   } catch(e) { console.error(e) }
 }
 
+function copyAllLinks() {
+  const base = getBaseUrl()
+  const links = allStreams.map(s => `${s.name}: ${base}/track/${s.slug}`).join('\n')
+  if (!links) { toast('Нет потоков', true); return }
+  copyText(links)
+  toast(`Скопировано ${allStreams.length} ссылок!`)
+}
+
 async function createStream() {
   const isTds = document.getElementById('sn-tds').checked
   const body = {
     name: document.getElementById('sn-name').value.trim(),
-    target_url: isTds ? 'tds' : document.getElementById('sn-url').value.trim(),
-    category_id: document.getElementById('sn-cat').value || null,
+    target_url: isTds ? null : document.getElementById('sn-url').value.trim(),
     tds_category_id: isTds ? (document.getElementById('sn-tds-cat').value || null) : null,
+    category_id: document.getElementById('sn-cat').value || null,
+    fallback_url: document.getElementById('sn-fallback').value.trim() || 'https://google.com',
     utm_source: document.getElementById('sn-source').value.trim(),
     utm_medium: document.getElementById('sn-medium').value.trim(),
     utm_campaign: document.getElementById('sn-campaign').value.trim()
   }
-  const msg = document.getElementById('sn-msg')
-  if (!body.name) { showMsg(msg,'err','Название обязательно'); return }
-  if (!isTds && !body.target_url) { showMsg(msg,'err','Укажи URL'); return }
+  if (!body.name) { showMsg('sn-msg','err','Название обязательно'); return }
+  if (!isTds && !body.target_url) { showMsg('sn-msg','err','Укажи URL'); return }
   const r = await fetch(`${API}/stats/streams`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
   const d = await r.json()
-  if (r.ok) { showMsg(msg,'ok',`Создан! Ссылка: ${API}/track/${d.id}`); loadStreams() }
-  else showMsg(msg,'err',d.error||'Ошибка')
+  if (r.ok) {
+    const link = `${getBaseUrl()}/track/${d.slug}`
+    showMsg('sn-msg','ok',`Создан! Ссылка: ${link}`)
+    loadStreams()
+  } else showMsg('sn-msg','err',d.error||'Ошибка')
 }
 
 async function bulkCreateStreams() {
   const names = document.getElementById('bs-names').value.trim().split('\n').filter(Boolean)
   const isTds = document.getElementById('bs-tds').checked
-  const url = isTds ? 'tds' : document.getElementById('bs-url').value.trim()
-  const msg = document.getElementById('bs-msg')
-  if (!names.length) { showMsg(msg,'err','Список пустой'); return }
-  if (!isTds && !url) { showMsg(msg,'err','Укажи URL'); return }
+  if (!names.length) { showMsg('bs-msg','err','Список пустой'); return }
+  if (!isTds && !document.getElementById('bs-url').value.trim()) { showMsg('bs-msg','err','Укажи URL'); return }
   let ok = 0
   for (const name of names) {
     const body = {
-      name: name.trim(), target_url: url,
-      category_id: document.getElementById('bs-cat').value || null,
+      name: name.trim(),
+      target_url: isTds ? null : document.getElementById('bs-url').value.trim(),
       tds_category_id: isTds ? (document.getElementById('bs-tds-cat').value || null) : null,
+      category_id: document.getElementById('bs-cat').value || null,
+      fallback_url: document.getElementById('bs-fallback').value.trim() || 'https://google.com',
       utm_source: document.getElementById('bs-source').value.trim(),
       utm_medium: document.getElementById('bs-medium').value.trim(),
       utm_campaign: document.getElementById('bs-campaign').value.trim()
@@ -722,7 +802,7 @@ async function bulkCreateStreams() {
     const r = await fetch(`${API}/stats/streams`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
     if (r.ok) ok++
   }
-  showMsg(msg,'ok',`Создано ${ok} из ${names.length} потоков`)
+  showMsg('bs-msg','ok',`Создано ${ok} из ${names.length} потоков`)
   loadStreams()
 }
 
@@ -730,12 +810,13 @@ function editStream(s) {
   document.getElementById('es-id').value = s.id
   document.getElementById('es-name').value = s.name
   document.getElementById('es-url').value = s.target_url||''
+  document.getElementById('es-fallback').value = s.fallback_url||'https://google.com'
   document.getElementById('es-source').value = s.utm_source||''
   document.getElementById('es-medium').value = s.utm_medium||''
   document.getElementById('es-campaign').value = s.utm_campaign||''
   const isTds = !!s.tds_category_id
   document.getElementById('es-tds').checked = isTds
-  toggleTdsMode('es')
+  toggleTds('es')
   openModal('modal-edit-stream')
   setTimeout(() => {
     document.getElementById('es-cat').value = s.category_id||''
@@ -748,17 +829,17 @@ async function saveStream() {
   const isTds = document.getElementById('es-tds').checked
   const body = {
     name: document.getElementById('es-name').value.trim(),
-    target_url: isTds ? 'tds' : document.getElementById('es-url').value.trim(),
-    category_id: document.getElementById('es-cat').value || null,
+    target_url: isTds ? null : document.getElementById('es-url').value.trim(),
     tds_category_id: isTds ? (document.getElementById('es-tds-cat').value || null) : null,
+    category_id: document.getElementById('es-cat').value || null,
+    fallback_url: document.getElementById('es-fallback').value.trim() || 'https://google.com',
     utm_source: document.getElementById('es-source').value.trim(),
     utm_medium: document.getElementById('es-medium').value.trim(),
     utm_campaign: document.getElementById('es-campaign').value.trim()
   }
-  const msg = document.getElementById('es-msg')
   const r = await fetch(`${API}/stats/streams/${id}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
-  if (r.ok) { showMsg(msg,'ok','Сохранено'); loadStreams() }
-  else showMsg(msg,'err','Ошибка')
+  if (r.ok) { showMsg('es-msg','ok','Сохранено'); loadStreams() }
+  else showMsg('es-msg','err','Ошибка')
 }
 
 async function deleteStream(id, name) {
@@ -782,15 +863,14 @@ async function loadCreatives() {
     tbody.innerHTML = creatives.map(c => {
       const s = statsMap[c.id] || {}
       const catName = allCategories.find(cat => cat.id == c.category_id)?.name || '—'
-      const link = `${API}/creative/${c.id}`
       return `<tr>
-        <td class="text-muted">${c.id}</td>
+        <td style="color:var(--muted2)">${c.id}</td>
         <td>${c.name}</td>
-        <td class="text-muted">${catName}</td>
-        <td class="text-accent">${s.total_clicks||0}</td>
+        <td style="color:var(--muted2)">${catName}</td>
+        <td style="color:var(--accent)">${s.total_clicks||0}</td>
         <td style="color:var(--blue)">${s.real_clicks||0}</td>
         <td>${s.total_leads||0}</td>
-        <td class="text-yellow">$${(s.total_payout||0).toFixed(2)}</td>
+        <td style="color:var(--yellow)">$${(s.total_payout||0).toFixed(2)}</td>
         <td><button class="copy-btn" onclick="copyText('${c.target_url}')">URL ⎘</button></td>
         <td><button class="btn-icon del" onclick="deleteCreative(${c.id})">✕</button></td>
       </tr>`
@@ -800,24 +880,22 @@ async function loadCreatives() {
 
 async function createCreative() {
   const body = {
-    name: document.getElementById('cr-name').value.trim() || 'Крео #'+Date.now(),
+    name: document.getElementById('cr-name').value.trim() || `Крео #${Date.now()}`,
     target_url: document.getElementById('cr-url').value.trim(),
     category_id: document.getElementById('cr-cat').value || null,
     utm_source: document.getElementById('cr-source').value.trim(),
     utm_medium: document.getElementById('cr-medium').value.trim(),
     utm_campaign: document.getElementById('cr-campaign').value.trim()
   }
-  const msg = document.getElementById('cr-msg')
-  if (!body.target_url) { showMsg(msg,'err','URL обязателен'); return }
+  if (!body.target_url) { showMsg('cr-msg','err','URL обязателен'); return }
   const r = await fetch(`${API}/creatives`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
-  if (r.ok) { showMsg(msg,'ok','Добавлен'); loadCreatives() }
-  else showMsg(msg,'err','Ошибка')
+  if (r.ok) { showMsg('cr-msg','ok','Добавлен'); loadCreatives() }
+  else showMsg('cr-msg','err','Ошибка')
 }
 
 async function bulkCreateCreatives() {
   const lines = document.getElementById('bc-list').value.trim().split('\n').filter(Boolean)
-  const msg = document.getElementById('bc-msg')
-  if (!lines.length) { showMsg(msg,'err','Список пустой'); return }
+  if (!lines.length) { showMsg('bc-msg','err','Список пустой'); return }
   let ok = 0
   for (let i = 0; i < lines.length; i++) {
     const parts = lines[i].split(';')
@@ -827,7 +905,7 @@ async function bulkCreateCreatives() {
     const r = await fetch(`${API}/creatives`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,target_url:url,category_id:document.getElementById('bc-cat').value||null})})
     if (r.ok) ok++
   }
-  showMsg(msg,'ok',`Создано ${ok} из ${lines.length}`)
+  showMsg('bc-msg','ok',`Создано ${ok} из ${lines.length}`)
   loadCreatives()
 }
 
@@ -846,7 +924,11 @@ async function loadCategories() {
     function renderCats(tbodyId, arr) {
       const tbody = document.getElementById(tbodyId)
       if (!arr.length) { tbody.innerHTML = `<tr><td colspan="3" class="empty">Нет категорий</td></tr>`; return }
-      tbody.innerHTML = arr.map(c => `<tr><td>${c.name}</td><td class="text-muted">${fmt(c.created_at)}</td><td><button class="btn-icon del" onclick="deleteCategory(${c.id},'${c.name.replace(/'/g,"\\'")}')">✕</button></td></tr>`).join('')
+      tbody.innerHTML = arr.map(c => `<tr>
+        <td>${c.name}</td>
+        <td style="color:var(--muted2)">${fmt(c.created_at)}</td>
+        <td><button class="btn-icon del" onclick="deleteCategory(${c.id},'${c.name.replace(/'/g,"\\'")}')">✕</button></td>
+      </tr>`).join('')
     }
     renderCats('cat-group-table', cats.filter(c => c.type==='group'))
     renderCats('cat-creative-table', cats.filter(c => c.type==='creative'))
@@ -856,11 +938,10 @@ async function loadCategories() {
 async function createCategory() {
   const name = document.getElementById('cat-name').value.trim()
   const type = document.getElementById('cat-type').value
-  const msg = document.getElementById('cat-msg')
-  if (!name) { showMsg(msg,'err','Название обязательно'); return }
+  if (!name) { showMsg('cat-msg','err','Название обязательно'); return }
   const r = await fetch(`${API}/categories`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,type})})
-  if (r.ok) { showMsg(msg,'ok','Создана'); loadCategories() }
-  else showMsg(msg,'err','Ошибка')
+  if (r.ok) { showMsg('cat-msg','ok','Создана'); loadCategories() }
+  else showMsg('cat-msg','err','Ошибка')
 }
 
 async function deleteCategory(id, name) {
@@ -871,24 +952,71 @@ async function deleteCategory(id, name) {
 }
 
 // SETTINGS
-function loadSettings() {
-  document.getElementById('postback-url').textContent = `${API}/postback?click_id={click_id}&payout={payout}&status={status}`
-  renderSignatures()
+async function loadSettings() {
+  try {
+    const s = await fetch(`${API}/stats/settings`).then(r => r.json())
+    currentDomain = s.domain || ''
+    document.getElementById('set-domain').value = currentDomain
+    updateDomainExample()
+    document.getElementById('postback-url').textContent = `${getBaseUrl()}/postback?click_id={click_id}&payout={payout}&status={status}`
+    renderNginxConf()
+    renderSignatures()
+  } catch(e) {}
+}
+
+function updateDomainExample() {
+  const d = document.getElementById('set-domain').value.trim() || 'ваш-домен'
+  document.getElementById('domain-example').textContent = `https://${d}/track/abc12345`
+}
+document.getElementById('set-domain').addEventListener('input', updateDomainExample)
+
+async function saveDomain() {
+  const domain = document.getElementById('set-domain').value.trim()
+  await fetch(`${API}/stats/settings`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:'domain',value:domain})})
+  currentDomain = domain
+  showMsg('domain-msg','ok','Домен сохранён. Обнови страницу потоков.')
+  renderNginxConf()
+}
+
+async function clearDomain() {
+  document.getElementById('set-domain').value = ''
+  await fetch(`${API}/stats/settings`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:'domain',value:''})})
+  currentDomain = ''
+  showMsg('domain-msg','ok','Домен очищен')
+}
+
+function renderNginxConf() {
+  const domain = document.getElementById('set-domain').value.trim() || 'ВАШ_ДОМЕН'
+  const conf = `server {
+    listen 80;
+    server_name ${domain};
+
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}`
+  document.getElementById('nginx-conf').textContent = conf
+}
+
+function copyNginx() {
+  copyText(document.getElementById('nginx-conf').textContent)
 }
 
 function renderSignatures() {
   const tbody = document.getElementById('sig-table')
-  if (!signatures.length) { tbody.innerHTML = `<tr><td colspan="3" class="empty">Нет сигнатур</td></tr>`; return }
-  tbody.innerHTML = signatures.map((s,i) => `<tr><td><code style="color:var(--accent)">${s.value}</code></td><td class="text-muted">${s.type==='ua'?'User-Agent':'IP'}</td><td><button class="btn-icon del" onclick="removeSignature(${i})">✕</button></td></tr>`).join('')
+  if (!signatures.length) { tbody.innerHTML = `<tr><td colspan="2" class="empty">Нет сигнатур</td></tr>`; return }
+  tbody.innerHTML = signatures.map((s,i) => `<tr><td><code>${s}</code></td><td><button class="btn-icon del" onclick="removeSignature(${i})">✕</button></td></tr>`).join('')
 }
 
 function addSignature() {
-  const value = document.getElementById('sig-value').value.trim().toLowerCase()
-  const type = document.getElementById('sig-type').value
-  if (!value) return
-  signatures.push({value,type})
+  const val = document.getElementById('sig-value').value.trim().toLowerCase()
+  if (!val) return
+  signatures.push(val)
   localStorage.setItem('bot_signatures', JSON.stringify(signatures))
-  toast('Сигнатура добавлена')
+  toast('Добавлено')
   closeModal('modal-signature')
   renderSignatures()
 }

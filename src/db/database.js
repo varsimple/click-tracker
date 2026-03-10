@@ -1,8 +1,13 @@
-import Database from "better-sqlite3";
+import Database from "better-sqlite3"
 
-const db = new Database("tracker.db");
+const db = new Database("tracker.db")
 
 db.exec(`
+  CREATE TABLE IF NOT EXISTS settings (
+    key TEXT PRIMARY KEY,
+    value TEXT
+  );
+
   CREATE TABLE IF NOT EXISTS categories (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
@@ -24,8 +29,10 @@ db.exec(`
 
   CREATE TABLE IF NOT EXISTS streams (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    slug TEXT NOT NULL UNIQUE,
     name TEXT NOT NULL,
     target_url TEXT,
+    fallback_url TEXT DEFAULT 'https://google.com',
     utm_source TEXT,
     utm_medium TEXT,
     utm_campaign TEXT,
@@ -58,6 +65,6 @@ db.exec(`
     created_at TEXT DEFAULT (datetime('now')),
     FOREIGN KEY (click_uuid) REFERENCES clicks(uuid)
   );
-`);
+`)
 
-export default db;
+export default db

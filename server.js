@@ -1,23 +1,59 @@
-import express from "express";
-import cookieParser from "cookie-parser";
-import trackRouter from "./src/routes/track.js";
-import postbackRouter from "./src/routes/postback.js";
-import statsRouter from "./src/routes/stats.js";
-import categoriesRouter from "./src/routes/categories.js";
-import creativesRouter from "./src/routes/creatives.js";
+import express from "express"
+import cookieParser from "cookie-parser"
+import session from "express-session"
+import trackRouter from "./src/routes/track.js"
+import postbackRouter from "./src/routes/postback.js"
+import statsRouter from "./src/routes/stats.js"
+import categoriesRouter from "./src/routes/categories.js"
+import creativesRouter from "./src/routes/creatives.js"
 
-const app = express();
-const PORT = 3000;
+const app = express()
+const PORT = 3000
 
-app.use(express.json());
-app.use(cookieParser());
-app.use("/track", trackRouter);
-app.use("/postback", postbackRouter);
-app.use("/stats", statsRouter);
-app.use("/categories", categoriesRouter);
-app.use("/creatives", creativesRouter);
-app.use(express.static("public"));
+const LOGIN = "zalupa"
+const PASSWORD = "pizda"
+
+app.use(express.json())
+app.use(cookieParser())
+app.use(session({
+  secret: "tracker_secret_8f3jd9",
+  resave: false,
+  saveUninitialized: false,
+  cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 } // 30 дней
+}))
+
+// Авторизация
+app.post("/login", (req, res) => {
+  const { login, password } = req.body
+  if (login === LOGIN && password === PASSWORD) {
+    req.session.auth = true
+    return res.json({ ok: true })
+  }
+  res.status(401).json({ error: "Неверный логин или пароль" })
+})
+
+app.get("/logout", (req, res) => {
+  req.session.destroy()
+  res.redirect("/login.html")
+})
+
+// Трек-роут без авторизации (публичный)
+app.use("/track", trackRouter)
+app.use("/postback", postbackRouter)
+
+// Middleware авторизации для всего остального
+function requireAuth(req, res, next) {
+  if (req.session?.auth) return next()
+  if (req.path.endsWith(".html") || req.path === "/") return res.redirect("/login.html")
+  return res.status(401).json({ error: "Не авторизован" })
+}
+
+app.use(requireAuth)
+app.use("/stats", statsRouter)
+app.use("/categories", categoriesRouter)
+app.use("/creatives", creativesRouter)
+app.use(express.static("public"))
 
 app.listen(PORT, () => {
-  console.log(`Сервер запущен на порту ${PORT}`);
-});
+  console.log(`Сервер запущен на порту ${PORT}`)
+})
