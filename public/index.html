@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TRACKER</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Unbounded:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080808;--surface:#101010;--surface2:#161616;--border:#1f1f1f;
+  --accent:#00ff88;--red:#ff3355;--blue:#4488ff;--yellow:#ffcc00;--purple:#aa66ff;
+  --text:#e0e0e0;--muted:#444;--muted2:#666;
+  --mono:'JetBrains Mono',monospace;--display:'Unbounded',sans-serif;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:12px;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,255,136,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,136,.02) 1px,transparent 1px);background-size:32px 32px;pointer-events:none;z-index:0}
+.layout{display:grid;grid-template-columns:200px 1fr;min-height:100vh;position:relative;z-index:1}
+.sidebar{border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.logo{font-family:var(--display);font-size:15px;font-weight:900;padding:24px 20px;border-bottom:1px solid var(--border);letter-spacing:-0.5px}
+.logo span{color:var(--accent)}
+.nav-section{padding:16px 20px 6px;font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--muted)}
+.nav-item{padding:8px 20px;cursor:pointer;color:var(--muted2);transition:all .15s;border-left:2px solid transparent;font-size:11px;display:flex;align-items:center;gap:8px}
+.nav-item:hover{color:var(--text);background:rgba(255,255,255,.02)}
+.nav-item.active{color:var(--accent);border-left-color:var(--accent);background:rgba(0,255,136,.04)}
+.nav-item .dot{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0}
+.pulse{animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.main{padding:28px;overflow-y:auto;max-height:100vh}
+.page{display:none}
+.page.active{display:block;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.page-title{font-family:var(--display);font-size:18px;font-weight:700;letter-spacing:-0.5px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:20px}
+.card{background:var(--surface);border:1px solid var(--border);padding:16px;position:relative;overflow:hidden}
+.card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.card.g::after{background:var(--accent)}.card.r::after{background:var(--red)}.card.b::after{background:var(--blue)}.card.y::after{background:var(--yellow)}.card.p::after{background:var(--purple)}
+.card-label{color:var(--muted2);font-size:9px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.card-val{font-family:var(--display);font-size:24px;font-weight:700;line-height:1}
+.card.g .card-val{color:var(--accent)}.card.r .card-val{color:var(--red)}.card.b .card-val{color:var(--blue)}.card.y .card-val{color:var(--yellow)}.card.p .card-val{color:var(--purple)}
+.filter-bar{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.filter-label{color:var(--muted2);font-size:10px;text-transform:uppercase;letter-spacing:1px}
+.tbl-wrap{background:var(--surface);border:1px solid var(--border);overflow:hidden;margin-bottom:0}
+.tbl-head{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.tbl-head-title{font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted2)}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;padding:8px 16px;font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);border-bottom:1px solid var(--border);font-weight:600;white-space:nowrap}
+td{padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.03);font-size:11px;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.015)}
+.empty{padding:32px;text-align:center;color:var(--muted);font-size:11px}
+.badge{display:inline-block;padding:2px 7px;font-size:9px;font-weight:700;letter-spacing:.5px}
+.badge-bot{background:rgba(255,51,85,.15);color:var(--red)}
+.badge-human{background:rgba(0,255,136,.1);color:var(--accent)}
+.btn{background:var(--accent);color:#000;border:none;font-family:var(--mono);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:8px 16px;cursor:pointer;transition:opacity .15s}
+.btn:hover{opacity:.85}
+.btn.secondary{background:transparent;border:1px solid var(--border);color:var(--muted2)}
+.btn.secondary:hover{border-color:var(--accent);color:var(--accent)}
+.btn-icon{background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;padding:4px 6px;transition:color .15s;font-family:var(--mono)}
+.btn-icon:hover{color:var(--accent)}
+.btn-icon.del:hover{color:var(--red)}
+.acc-row{cursor:pointer}
+.acc-row:hover td{background:rgba(0,255,136,.03) !important}
+.acc-detail{display:none;background:var(--surface2)}
+.acc-detail.open{display:table-row}
+.acc-detail td{padding:12px 16px;border-bottom:1px solid var(--border)}
+.acc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
+.acc-item{background:var(--bg);border:1px solid var(--border);padding:10px 12px}
+.acc-item-label{font-size:9px;color:var(--muted2);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.acc-item-value{font-size:11px;word-break:break-all;color:var(--text)}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:100;display:none;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);padding:24px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;animation:fadeIn .2s ease}
+.modal-title{font-family:var(--display);font-size:14px;font-weight:700;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center}
+.modal-close{background:none;border:none;color:var(--muted2);cursor:pointer;font-size:16px;font-family:var(--mono)}
+.modal-close:hover{color:var(--red)}
+.form-grid{display:grid;gap:12px}
+.field{display:flex;flex-direction:column;gap:5px}
+label{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--muted2)}
+input,select,textarea{background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:12px;padding:8px 12px;outline:none;transition:border-color .15s;width:100%}
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+textarea{resize:vertical;min-height:80px}
+.form-actions{display:flex;gap:8px;margin-top:4px}
+.msg{padding:8px 12px;font-size:11px;margin-top:8px;display:none}
+.msg.ok{background:rgba(0,255,136,.08);color:var(--accent);border-left:2px solid var(--accent)}
+.msg.err{background:rgba(255,51,85,.08);color:var(--red);border-left:2px solid var(--red)}
+.toast{position:fixed;bottom:20px;right:20px;background:var(--accent);color:#000;font-family:var(--mono);font-size:11px;font-weight:700;padding:8px 16px;opacity:0;transform:translateY(8px);transition:all .2s;pointer-events:none;z-index:999}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.err-toast{background:var(--red);color:#fff}
+.section-gap{margin-top:16px}
+.text-muted{color:var(--muted2)}
+.text-accent{color:var(--accent)}
+.text-red{color:var(--red)}
+.text-blue{color:var(--blue)}
+.text-yellow{color:var(--yellow)}
+.copy-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:10px;font-family:var(--mono);padding:2px 4px;transition:color .15s}
+.copy-btn:hover{color:var(--accent)}
+.tabs{display:flex;gap:0;margin-bottom:16px;border-bottom:1px solid var(--border)}
+.tab{padding:8px 16px;cursor:pointer;color:var(--muted2);font-size:10px;text-transform:uppercase;letter-spacing:1px;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.tds-toggle{display:flex;align-items:center;gap:10px;padding:12px;background:var(--bg);border:1px solid var(--border);margin-bottom:8px}
+.toggle{position:relative;width:36px;height:20px;cursor:pointer}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;inset:0;background:var(--border);transition:.3s;border-radius:20px}
+.toggle input:checked + .toggle-slider{background:var(--accent)}
+.toggle-slider::before{content:'';position:absolute;width:14px;height:14px;left:3px;bottom:3px;background:white;transition:.3s;border-radius:50%}
+.toggle input:checked + .toggle-slider::before{transform:translateX(16px)}
+</style>
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+  <div class="logo">TRK<span>.</span>KR</div>
+  <div class="nav-section">Аналитика</div>
+  <div class="nav-item active" onclick="nav('dashboard',this)"><span class="dot pulse" style="color:var(--accent)"></span>Dashboard</div>
+  <div class="nav-item" onclick="nav('clicks',this)"><span class="dot"></span>Клики</div>
+  <div class="nav-item" onclick="nav('leads',this)"><span class="dot"></span>Лиды</div>
+  <div class="nav-section">Управление</div>
+  <div class="nav-item" onclick="nav('streams',this)"><span class="dot"></span>Потоки</div>
+  <div class="nav-item" onclick="nav('creatives',this)"><span class="dot"></span>Креативы</div>
+  <div class="nav-section">Система</div>
+  <div class="nav-item" onclick="nav('categories',this)"><span class="dot"></span>Категории</div>
+  <div class="nav-item" onclick="nav('settings',this)"><span class="dot"></span>Настройки</div>
+</aside>
+<main class="main">
+
+<!-- DASHBOARD -->
+<div id="page-dashboard" class="page active">
+  <div class="page-header">
+    <div class="page-title">Dashboard</div>
+    <button class="btn secondary" onclick="loadDashboard()">↻ Обновить</button>
+  </div>
+  <div class="filter-bar">
+    <span class="filter-label">Период:</span>
+    <select id="dash-period" onchange="loadDashboard()">
+      <option value="today">Сегодня</option>
+      <option value="yesterday">Вчера</option>
+      <option value="7">7 дней</option>
+      <option value="30">30 дней</option>
+      <option value="all">Всё время</option>
+    </select>
+    <span class="filter-label">Поток:</span>
+    <select id="dash-stream" onchange="loadDashboard()"><option value="all">Все потоки</option></select>
+    <span class="filter-label">Группировка:</span>
+    <select id="dash-group" onchange="loadDashboard()">
+      <option value="stream">По потокам</option>
+      <option value="creative">По креативам</option>
+    </select>
+  </div>
+  <div class="cards">
+    <div class="card g"><div class="card-label">Кликов</div><div class="card-val" id="s-total">—</div></div>
+    <div class="card b"><div class="card-label">Реальных</div><div class="card-val" id="s-real">—</div></div>
+    <div class="card r"><div class="card-label">Ботов</div><div class="card-val" id="s-bots">—</div></div>
+    <div class="card y"><div class="card-label">Лидов</div><div class="card-val" id="s-leads">—</div></div>
+    <div class="card p"><div class="card-label">Доход $</div><div class="card-val" id="s-payout">—</div></div>
+  </div>
+  <div class="tbl-wrap">
+    <div class="tbl-head"><span class="tbl-head-title" id="dash-table-title">По потокам</span></div>
+    <table><thead><tr id="dash-thead"></tr></thead><tbody id="dash-table"></tbody></table>
+  </div>
+</div>
+
+<!-- CLICKS -->
+<div id="page-clicks" class="page">
+  <div class="page-header">
+    <div class="page-title">Клики</div>
+    <button class="btn secondary" onclick="loadClicks()">↻ Обновить</button>
+  </div>
+  <div class="filter-bar">
+    <span class="filter-label">Тип:</span>
+    <select id="click-filter" onchange="loadClicks()">
+      <option value="all">Все</option>
+      <option value="human">Люди</option>
+      <option value="bot">Боты</option>
+    </select>
+  </div>
+  <div class="tbl-wrap">
+    <div class="tbl-head"><span class="tbl-head-title">Лог кликов (последние 200)</span></div>
+    <table><thead><tr><th>▶</th><th>Время</th><th>UUID</th><th>Поток</th><th>Креатив</th><th>IP</th><th>Тип</th><th></th></tr></thead>
+    <tbody id="clicks-table"></tbody></table>
+  </div>
+</div>
+
+<!-- LEADS -->
+<div id="page-leads" class="page">
+  <div class="page-header"><div class="page-title">Лиды</div><button class="btn secondary" onclick="loadLeads()">↻ Обновить</button></div>
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('leads','summary',this)">Сводка</div>
+    <div class="tab" onclick="switchTab('leads','log',this)">Детальный лог</div>
+  </div>
+  <div id="leads-summary" class="tab-content active">
+    <div class="tbl-wrap">
+      <div class="tbl-head"><span class="tbl-head-title">По потокам</span></div>
+      <table><thead><tr><th>Поток</th><th>Лидов</th><th>Доход $</th></tr></thead>
+      <tbody id="leads-table"></tbody></table>
+    </div>
+  </div>
+  <div id="leads-log" class="tab-content">
+    <div class="tbl-wrap">
+      <div class="tbl-head"><span class="tbl-head-title">Все лиды</span></div>
+      <table><thead><tr><th>▶</th><th>Время</th><th>Поток</th><th>Креатив</th><th>Сумма</th><th>Статус</th></tr></thead>
+      <tbody id="leads-log-table"></tbody></table>
+    </div>
+  </div>
+</div>
+
+<!-- STREAMS -->
+<div id="page-streams" class="page">
+  <div class="page-header">
+    <div class="page-title">Потоки</div>
+    <div style="display:flex;gap:8px">
+      <button class="btn secondary" onclick="openModal('modal-bulk-stream')">+ Массово</button>
+      <button class="btn" onclick="openModal('modal-stream')">+ Создать</button>
+    </div>
+  </div>
+  <div class="tbl-wrap">
+    <div class="tbl-head"><span class="tbl-head-title">Все потоки</span><button class="btn secondary" onclick="loadStreams()">↻</button></div>
+    <table><thead><tr><th>ID</th><th>Название</th><th>Категория</th><th>Режим</th><th>Ссылка</th><th>Создан</th><th></th></tr></thead>
+    <tbody id="streams-table"></tbody></table>
+  </div>
+</div>
+
+<!-- CREATIVES -->
+<div id="page-creatives" class="page">
+  <div class="page-header">
+    <div class="page-title">Креативы</div>
+    <div style="display:flex;gap:8px">
+      <button class="btn secondary" onclick="openModal('modal-bulk-creative')">+ Массово</button>
+      <button class="btn" onclick="openModal('modal-creative')">+ Добавить</button>
+    </div>
+  </div>
+  <div class="tbl-wrap">
+    <div class="tbl-head"><span class="tbl-head-title">Все креативы + статистика</span><button class="btn secondary" onclick="loadCreatives()">↻</button></div>
+    <table><thead><tr><th>ID</th><th>Название</th><th>Категория</th><th>Кликов</th><th>Реальных</th><th>Лидов</th><th>Доход</th><th>Ссылка</th><th></th></tr></thead>
+    <tbody id="creatives-table"></tbody></table>
+  </div>
+</div>
+
+<!-- CATEGORIES -->
+<div id="page-categories" class="page">
+  <div class="page-header">
+    <div class="page-title">Категории</div>
+    <button class="btn" onclick="openModal('modal-category')">+ Создать</button>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+    <div class="tbl-wrap">
+      <div class="tbl-head"><span class="tbl-head-title">Группы (источники трафика)</span></div>
+      <table><thead><tr><th>Название</th><th>Создана</th><th></th></tr></thead><tbody id="cat-group-table"></tbody></table>
+    </div>
+    <div class="tbl-wrap">
+      <div class="tbl-head"><span class="tbl-head-title">Креативы</span></div>
+      <table><thead><tr><th>Название</th><th>Создана</th><th></th></tr></thead><tbody id="cat-creative-table"></tbody></table>
+    </div>
+  </div>
+</div>
+
+<!-- SETTINGS -->
+<div id="page-settings" class="page">
+  <div class="page-header"><div class="page-title">Настройки</div></div>
+  <div class="tbl-wrap" style="max-width:560px">
+    <div class="tbl-head"><span class="tbl-head-title">Постбек URL</span></div>
+    <table><tbody>
+      <tr><td class="text-muted">Шаблон</td><td><code id="postback-url" style="color:var(--accent);font-size:10px"></code> <button class="copy-btn" onclick="copyText(document.getElementById('postback-url').textContent)">⎘</button></td></tr>
+      <tr><td class="text-muted">Параметры</td><td class="text-muted" style="font-size:10px">click_id — обязательный, payout — сумма, status — статус</td></tr>
+    </tbody></table>
+  </div>
+  <div class="section-gap"></div>
+  <div class="tbl-wrap" style="max-width:560px">
+    <div class="tbl-head"><span class="tbl-head-title">Сигнатуры ботов</span><button class="btn" onclick="openModal('modal-signature')">+ Добавить</button></div>
+    <table><thead><tr><th>Сигнатура</th><th>Тип</th><th></th></tr></thead><tbody id="sig-table"></tbody></table>
+  </div>
+</div>
+
+</main>
+</div>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modal-stream">
+  <div class="modal">
+    <div class="modal-title">Создать поток <button class="modal-close" onclick="closeModal('modal-stream')">✕</button></div>
+    <div class="form-grid">
+      <div class="field"><label>Название</label><input id="sn-name" placeholder="Группа ВК Дача #1"></div>
+      <div class="field"><label>Категория потока (группы)</label><select id="sn-cat"><option value="">— без категории —</option></select></div>
+      <div class="tds-toggle">
+        <label class="toggle"><input type="checkbox" id="sn-tds" onchange="toggleTdsMode('sn')"><span class="toggle-slider"></span></label>
+        <span style="font-size:11px">TDS режим — рандомный креатив из категории</span>
+      </div>
+      <div id="sn-direct-fields">
+        <div class="field"><label>Целевой URL</label><input id="sn-url" placeholder="https://offer.com/landing"></div>
+      </div>
+      <div id="sn-tds-fields" style="display:none">
+        <div class="field"><label>Категория креативов для TDS</label><select id="sn-tds-cat"><option value="">— выберите —</option></select></div>
+      </div>
+      <div class="field"><label>UTM Source</label><input id="sn-source" placeholder="vk"></div>
+      <div class="field"><label>UTM Medium</label><input id="sn-medium" placeholder="organic"></div>
+      <div class="field"><label>UTM Campaign</label><input id="sn-campaign"></div>
+      <div class="form-actions"><button class="btn" onclick="createStream()">Создать</button><button class="btn secondary" onclick="closeModal('modal-stream')">Отмена</button></div>
+      <div id="sn-msg" class="msg"></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-edit-stream">
+  <div class="modal">
+    <div class="modal-title">Редактировать поток <button class="modal-close" onclick="closeModal('modal-edit-stream')">✕</button></div>
+    <div class="form-grid">
+      <input type="hidden" id="es-id">
+      <div class="field"><label>Название</label><input id="es-name"></div>
+      <div class="field"><label>Категория потока</label><select id="es-cat"><option value="">— без категории —</option></select></div>
+      <div class="tds-toggle">
+        <label class="toggle"><input type="checkbox" id="es-tds" onchange="toggleTdsMode('es')"><span class="toggle-slider"></span></label>
+        <span style="font-size:11px">TDS режим</span>
+      </div>
+      <div id="es-direct-fields">
+        <div class="field"><label>Целевой URL</label><input id="es-url"></div>
+      </div>
+      <div id="es-tds-fields" style="display:none">
+        <div class="field"><label>Категория креативов для TDS</label><select id="es-tds-cat"><option value="">— выберите —</option></select></div>
+      </div>
+      <div class="field"><label>UTM Source</label><input id="es-source"></div>
+      <div class="field"><label>UTM Medium</label><input id="es-medium"></div>
+      <div class="field"><label>UTM Campaign</label><input id="es-campaign"></div>
+      <div class="form-actions"><button class="btn" onclick="saveStream()">Сохранить</button><button class="btn secondary" onclick="closeModal('modal-edit-stream')">Отмена</button></div>
+      <div id="es-msg" class="msg"></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-bulk-stream">
+  <div class="modal">
+    <div class="modal-title">Массовое создание потоков <button class="modal-close" onclick="closeModal('modal-bulk-stream')">✕</button></div>
+    <div class="form-grid">
+      <div class="field"><label>Категория потоков</label><select id="bs-cat"><option value="">— без категории —</option></select></div>
+      <div class="tds-toggle">
+        <label class="toggle"><input type="checkbox" id="bs-tds" onchange="toggleTdsMode('bs')"><span class="toggle-slider"></span></label>
+        <span style="font-size:11px">TDS режим для всех потоков</span>
+      </div>
+      <div id="bs-direct-fields">
+        <div class="field"><label>Целевой URL (для всех)</label><input id="bs-url" placeholder="https://offer.com/landing"></div>
+      </div>
+      <div id="bs-tds-fields" style="display:none">
+        <div class="field"><label>Категория креативов для TDS</label><select id="bs-tds-cat"><option value="">— выберите —</option></select></div>
+      </div>
+      <div class="field"><label>UTM Source</label><input id="bs-source" placeholder="vk"></div>
+      <div class="field"><label>UTM Medium</label><input id="bs-medium" placeholder="organic"></div>
+      <div class="field"><label>UTM Campaign</label><input id="bs-campaign"></div>
+      <div class="field"><label>Названия потоков (каждая строка = 1 поток)</label><textarea id="bs-names" placeholder="Группа Дача #1&#10;Группа Огород #2&#10;Группа Сад #3" style="min-height:120px"></textarea></div>
+      <div class="form-actions"><button class="btn" onclick="bulkCreateStreams()">Создать все</button><button class="btn secondary" onclick="closeModal('modal-bulk-stream')">Отмена</button></div>
+      <div id="bs-msg" class="msg"></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-creative">
+  <div class="modal">
+    <div class="modal-title">Добавить креатив <button class="modal-close" onclick="closeModal('modal-creative')">✕</button></div>
+    <div class="form-grid">
+      <div class="field"><label>Название</label><input id="cr-name" placeholder="Крео Собаки #1"></div>
+      <div class="field"><label>URL лендинга в ПП</label><input id="cr-url" placeholder="https://pp.com/land?offer=123"></div>
+      <div class="field"><label>Категория</label><select id="cr-cat"><option value="">— без категории —</option></select></div>
+      <div class="field"><label>UTM Source</label><input id="cr-source" placeholder="vk"></div>
+      <div class="field"><label>UTM Medium</label><input id="cr-medium" placeholder="creative"></div>
+      <div class="field"><label>UTM Campaign</label><input id="cr-campaign"></div>
+      <div class="form-actions"><button class="btn" onclick="createCreative()">Добавить</button><button class="btn secondary" onclick="closeModal('modal-creative')">Отмена</button></div>
+      <div id="cr-msg" class="msg"></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-bulk-creative">
+  <div class="modal">
+    <div class="modal-title">Массовое добавление креативов <button class="modal-close" onclick="closeModal('modal-bulk-creative')">✕</button></div>
+    <div class="form-grid">
+      <div class="field"><label>Категория для всех</label><select id="bc-cat"><option value="">— без категории —</option></select></div>
+      <div class="field"><label>Список (каждая строка: URL;Название — название необязательно)</label><textarea id="bc-list" placeholder="https://pp.com/land?a=1;Крео Собаки&#10;https://pp.com/land?a=2;Крео Кошки&#10;https://pp.com/land?a=3" style="min-height:140px"></textarea></div>
+      <div class="form-actions"><button class="btn" onclick="bulkCreateCreatives()">Создать все</button><button class="btn secondary" onclick="closeModal('modal-bulk-creative')">Отмена</button></div>
+      <div id="bc-msg" class="msg"></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-category">
+  <div class="modal">
+    <div class="modal-title">Создать категорию <button class="modal-close" onclick="closeModal('modal-category')">✕</button></div>
+    <div class="form-grid">
+      <div class="field"><label>Название</label><input id="cat-name" placeholder="Сад и огород"></div>
+      <div class="field"><label>Тип</label><select id="cat-type"><option value="group">Группа (источник трафика)</option><option value="creative">Креатив</option></select></div>
+      <div class="form-actions"><button class="btn" onclick="createCategory()">Создать</button><button class="btn secondary" onclick="closeModal('modal-category')">Отмена</button></div>
+      <div id="cat-msg" class="msg"></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-signature">
+  <div class="modal">
+    <div class="modal-title">Добавить сигнатуру бота <button class="modal-close" onclick="closeModal('modal-signature')">✕</button></div>
+    <div class="form-grid">
+      <div class="field"><label>Сигнатура (часть user-agent или IP)</label><input id="sig-value" placeholder="googlebot"></div>
+      <div class="field"><label>Тип</label><select id="sig-type"><option value="ua">User-Agent</option><option value="ip">IP адрес</option></select></div>
+      <div class="form-actions"><button class="btn" onclick="addSignature()">Добавить</button><button class="btn secondary" onclick="closeModal('modal-signature')">Отмена</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = 'http://localhost:3000'
+let allStreams = []
+let allCategories = []
+let signatures = JSON.parse(localStorage.getItem('bot_signatures') || '[]')
+
+function nav(page, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'))
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'))
+  document.getElementById('page-' + page).classList.add('active')
+  if (el) el.classList.add('active')
+  const loaders = {dashboard:loadDashboard,clicks:loadClicks,leads:loadLeads,streams:loadStreams,creatives:loadCreatives,categories:loadCategories,settings:loadSettings}
+  if (loaders[page]) loaders[page]()
+}
+
+function switchTab(page, tab, el) {
+  document.querySelectorAll(`#page-${page} .tab-content`).forEach(t => t.classList.remove('active'))
+  document.querySelectorAll(`#page-${page} .tab`).forEach(t => t.classList.remove('active'))
+  document.getElementById(`${page}-${tab}`).classList.add('active')
+  el.classList.add('active')
+  if (page === 'leads' && tab === 'log') loadLeadsLog()
+}
+
+function openModal(id) { document.getElementById(id).classList.add('open'); populateCategorySelects() }
+function closeModal(id) { document.getElementById(id).classList.remove('open') }
+document.querySelectorAll('.modal-overlay').forEach(m => m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open') }))
+
+function toast(msg, err) {
+  const t = document.getElementById('toast')
+  t.textContent = msg
+  t.className = 'toast show' + (err ? ' err-toast' : '')
+  setTimeout(() => t.classList.remove('show'), 2500)
+}
+
+function copyText(text) { navigator.clipboard.writeText(text); toast('Скопировано!') }
+
+function fmt(dt) {
+  if (!dt) return '—'
+  try { return new Date(dt.includes('T') ? dt : dt + 'Z').toLocaleString('ru-RU', {hour12:false}) } catch(e) { return dt }
+}
+
+function dateFilter(period) {
+  const now = new Date()
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  if (period === 'today') return today.toISOString().split('T')[0]
+  if (period === 'yesterday') { const y = new Date(today); y.setDate(y.getDate()-1); return y.toISOString().split('T')[0] }
+  if (period === '7') { const d = new Date(today); d.setDate(d.getDate()-7); return d.toISOString().split('T')[0] }
+  if (period === '30') { const d = new Date(today); d.setDate(d.getDate()-30); return d.toISOString().split('T')[0] }
+  return null
+}
+
+function showMsg(el, type, text) {
+  el.className = 'msg ' + (type === 'ok' ? 'ok' : 'err')
+  el.textContent = text
+  el.style.display = 'block'
+}
+
+function toggleTdsMode(prefix) {
+  const checked = document.getElementById(`${prefix}-tds`).checked
+  document.getElementById(`${prefix}-direct-fields`).style.display = checked ? 'none' : 'block'
+  document.getElementById(`${prefix}-tds-fields`).style.display = checked ? 'block' : 'none'
+}
+
+async function populateCategorySelects() {
+  try {
+    const cats = await fetch(`${API}/categories`).then(r => r.json())
+    allCategories = cats
+    const groupCats = cats.filter(c => c.type === 'group')
+    const crCats = cats.filter(c => c.type === 'creative')
+
+    function fillSelect(id, arr) {
+      const sel = document.getElementById(id)
+      if (!sel) return
+      const cur = sel.value
+      while (sel.options.length > 1) sel.remove(1)
+      arr.forEach(c => sel.add(new Option(c.name, c.id)))
+      sel.value = cur
+    }
+
+    fillSelect('sn-cat', groupCats); fillSelect('es-cat', groupCats); fillSelect('bs-cat', groupCats)
+    fillSelect('sn-tds-cat', crCats); fillSelect('es-tds-cat', crCats); fillSelect('bs-tds-cat', crCats)
+    fillSelect('cr-cat', crCats); fillSelect('bc-cat', crCats)
+
+    const dsel = document.getElementById('dash-stream')
+    const dcur = dsel.value
+    while (dsel.options.length > 1) dsel.remove(1)
+    allStreams.forEach(s => dsel.add(new Option(s.name, s.id)))
+    dsel.value = dcur
+  } catch(e) {}
+}
+
+// DASHBOARD
+async function loadDashboard() {
+  const period = document.getElementById('dash-period').value
+  const streamFilter = document.getElementById('dash-stream').value
+  const groupBy = document.getElementById('dash-group').value
+  const since = dateFilter(period)
+
+  try {
+    const [clicksRaw, leadsRaw, streams] = await Promise.all([
+      fetch(`${API}/stats/clicks-log`).then(r => r.json()),
+      fetch(`${API}/stats/leads`).then(r => r.json()),
+      fetch(`${API}/stats/streams`).then(r => r.json())
+    ])
+    allStreams = streams
+    populateCategorySelects()
+
+    let clicks = clicksRaw
+    if (since) clicks = clicks.filter(c => c.created_at && c.created_at >= since)
+    if (streamFilter !== 'all') clicks = clicks.filter(c => c.stream_id == streamFilter)
+
+    const byKey = {}
+    clicks.forEach(c => {
+      const key = groupBy === 'creative' ? (c.creative_id || 'no-creative') : c.stream_id
+      const name = groupBy === 'creative' ? (c.creative_name || '— без креатива —') : c.stream_name
+      if (!byKey[key]) byKey[key] = {name, total:0, bots:0, real:0}
+      byKey[key].total++
+      if (c.is_bot) byKey[key].bots++; else byKey[key].real++
+    })
+
+    const leadsMap = {}
+    leadsRaw.forEach(l => leadsMap[l.stream_name] = l)
+
+    let total=0,real=0,bots=0,totalLeads=0,totalPay=0
+    Object.values(byKey).forEach(s => { total+=s.total; real+=s.real; bots+=s.bots })
+    leadsRaw.forEach(l => { totalLeads+=l.total_leads; totalPay+=(l.total_payout||0) })
+
+    document.getElementById('s-total').textContent = total
+    document.getElementById('s-real').textContent = real
+    document.getElementById('s-bots').textContent = bots
+    document.getElementById('s-leads').textContent = totalLeads
+    document.getElementById('s-payout').textContent = '$'+totalPay.toFixed(2)
+
+    const thead = document.getElementById('dash-thead')
+    const tbody = document.getElementById('dash-table')
+    document.getElementById('dash-table-title').textContent = groupBy === 'creative' ? 'По креативам' : 'По потокам'
+
+    thead.innerHTML = groupBy === 'creative'
+      ? '<th>Креатив</th><th>Кликов</th><th>Реальных</th><th>Ботов</th>'
+      : '<th>Поток</th><th>Категория</th><th>Кликов</th><th>Реальных</th><th>Ботов</th><th>Лидов</th><th>Доход</th>'
+
+    const rows = Object.values(byKey)
+    if (!rows.length) { tbody.innerHTML = `<tr><td colspan="7" class="empty">Нет данных за выбранный период</td></tr>`; return }
+
+    const streamMap = {}
+    streams.forEach(s => streamMap[s.id] = s)
+
+    tbody.innerHTML = rows.map(s => {
+      if (groupBy === 'creative') {
+        return `<tr><td>${s.name}</td><td class="text-accent">${s.total}</td><td style="color:var(--blue)">${s.real}</td><td class="text-red">${s.bots}</td></tr>`
+      }
+      const l = leadsMap[s.name] || {}
+      return `<tr><td>${s.name}</td><td class="text-muted">—</td><td class="text-accent">${s.total}</td><td style="color:var(--blue)">${s.real}</td><td class="text-red">${s.bots}</td><td>${l.total_leads||0}</td><td class="text-yellow">$${(l.total_payout||0).toFixed(2)}</td></tr>`
+    }).join('')
+  } catch(e) { console.error(e) }
+}
+
+// CLICKS
+async function loadClicks() {
+  try {
+    const filter = document.getElementById('click-filter').value
+    let clicks = await fetch(`${API}/stats/clicks-log`).then(r => r.json())
+    if (filter === 'human') clicks = clicks.filter(c => !c.is_bot)
+    if (filter === 'bot') clicks = clicks.filter(c => c.is_bot)
+    const tbody = document.getElementById('clicks-table')
+    if (!clicks.length) { tbody.innerHTML = `<tr><td colspan="8" class="empty">Нет кликов</td></tr>`; return }
+    tbody.innerHTML = clicks.map(c => `
+      <tr class="acc-row" onclick="toggleAcc('acc-${c.id}')">
+        <td style="color:var(--muted2);width:20px" id="arr-${c.id}">▶</td>
+        <td class="text-muted">${fmt(c.created_at)}</td>
+        <td><button class="copy-btn" onclick="event.stopPropagation();copyText('${c.uuid}')">${c.uuid.slice(0,8)}…</button></td>
+        <td>${c.stream_name}</td>
+        <td class="text-muted">${c.creative_name||'—'}</td>
+        <td class="text-muted">${c.ip||'—'}</td>
+        <td><span class="badge ${c.is_bot?'badge-bot':'badge-human'}">${c.is_bot?'БОТ':'ЧЕЛОВЕК'}</span></td>
+        <td>${!c.is_bot?`<button class="btn-icon del" onclick="event.stopPropagation();markBot(${c.id})" title="Пометить бот">🤖</button>`:''}</td>
+      </tr>
+      <tr class="acc-detail" id="acc-${c.id}">
+        <td colspan="8">
+          <div class="acc-grid">
+            <div class="acc-item"><div class="acc-item-label">UUID</div><div class="acc-item-value">${c.uuid}</div></div>
+            <div class="acc-item"><div class="acc-item-label">IP</div><div class="acc-item-value">${c.ip||'—'}</div></div>
+            <div class="acc-item"><div class="acc-item-label">Поток</div><div class="acc-item-value">${c.stream_name}</div></div>
+            <div class="acc-item"><div class="acc-item-label">Креатив</div><div class="acc-item-value">${c.creative_name||'—'}</div></div>
+            <div class="acc-item"><div class="acc-item-label">Referer</div><div class="acc-item-value">${c.referer||'—'}</div></div>
+            <div class="acc-item"><div class="acc-item-label">Статус</div><div class="acc-item-value">${c.is_bot?'🤖 Бот':'✅ Человек'}</div></div>
+            <div class="acc-item"><div class="acc-item-label">Время</div><div class="acc-item-value">${fmt(c.created_at)}</div></div>
+            <div class="acc-item" style="grid-column:1/-1"><div class="acc-item-label">User-Agent</div><div class="acc-item-value">${c.user_agent||'—'}</div></div>
+          </div>
+        </td>
+      </tr>`).join('')
+  } catch(e) { console.error(e) }
+}
+
+function toggleAcc(id) {
+  const row = document.getElementById(id)
+  row.classList.toggle('open')
+  const arr = document.getElementById('arr-' + id.replace('acc-',''))
+  if (arr) arr.textContent = row.classList.contains('open') ? '▼' : '▶'
+}
+
+async function markBot(clickId) {
+  await fetch(`${API}/stats/clicks/${clickId}/mark-bot`, {method:'POST'})
+  toast('Помечен как бот')
+  loadClicks()
+}
+
+// LEADS
+async function loadLeads() {
+  try {
+    const leads = await fetch(`${API}/stats/leads`).then(r => r.json())
+    const tbody = document.getElementById('leads-table')
+    if (!leads.length) { tbody.innerHTML = `<tr><td colspan="3" class="empty">Нет лидов</td></tr>`; return }
+    tbody.innerHTML = leads.map(l => `<tr><td>${l.stream_name}</td><td class="text-accent">${l.total_leads}</td><td class="text-yellow">$${(l.total_payout||0).toFixed(2)}</td></tr>`).join('')
+  } catch(e) {}
+}
+
+async function loadLeadsLog() {
+  try {
+    const leads = await fetch(`${API}/stats/leads-log`).then(r => r.json())
+    const tbody = document.getElementById('leads-log-table')
+    if (!leads.length) { tbody.innerHTML = `<tr><td colspan="6" class="empty">Нет лидов</td></tr>`; return }
+    tbody.innerHTML = leads.map(l => `
+      <tr class="acc-row" onclick="toggleAcc('lacc-${l.id}')">
+        <td style="color:var(--muted2);width:20px" id="arr-lacc-${l.id}">▶</td>
+        <td class="text-muted">${fmt(l.created_at)}</td>
+        <td>${l.stream_name}</td>
+        <td class="text-muted">${l.creative_name||'—'}</td>
+        <td class="text-yellow">$${(l.payout||0).toFixed(2)}</td>
+        <td><span class="badge badge-human">${l.status||'approved'}</span></td>
+      </tr>
+      <tr class="acc-detail" id="lacc-${l.id}">
+        <td colspan="6">
+          <div class="acc-grid">
+            <div class="acc-item"><div class="acc-item-label">Click UUID</div><div class="acc-item-value">${l.click_uuid}</div></div>
+            <div class="acc-item"><div class="acc-item-label">Поток</div><div class="acc-item-value">${l.stream_name}</div></div>
+            <div class="acc-item"><div class="acc-item-label">Креатив</div><div class="acc-item-value">${l.creative_name||'—'}</div></div>
+            <div class="acc-item"><div class="acc-item-label">IP</div><div class="acc-item-value">${l.ip||'—'}</div></div>
+            <div class="acc-item"><div class="acc-item-label">Referer</div><div class="acc-item-value">${l.referer||'—'}</div></div>
+            <div class="acc-item"><div class="acc-item-label">Сумма</div><div class="acc-item-value">$${(l.payout||0).toFixed(2)}</div></div>
+          </div>
+        </td>
+      </tr>`).join('')
+  } catch(e) {}
+}
+
+// STREAMS
+async function loadStreams() {
+  try {
+    const streams = await fetch(`${API}/stats/streams`).then(r => r.json())
+    allStreams = streams
+    await populateCategorySelects()
+    const tbody = document.getElementById('streams-table')
+    if (!streams.length) { tbody.innerHTML = `<tr><td colspan="7" class="empty">Нет потоков</td></tr>`; return }
+    tbody.innerHTML = streams.map(s => {
+      const link = `${API}/track/${s.id}`
+      const catName = allCategories.find(c => c.id == s.category_id)?.name || '—'
+      const mode = s.tds_category_id ? `<span style="color:var(--purple);font-size:9px">TDS</span>` : `<span style="color:var(--muted2);font-size:9px">Прямой</span>`
+      return `<tr>
+        <td class="text-muted">${s.id}</td>
+        <td>${s.name}</td>
+        <td class="text-muted">${catName}</td>
+        <td>${mode}</td>
+        <td><button class="copy-btn" onclick="copyText('${link}')">/track/${s.id} ⎘</button></td>
+        <td class="text-muted">${fmt(s.created_at)}</td>
+        <td>
+          <button class="btn-icon" onclick='editStream(${JSON.stringify(s)})'>✎</button>
+          <button class="btn-icon del" onclick="deleteStream(${s.id},'${s.name.replace(/'/g,"\\'")}')">✕</button>
+        </td>
+      </tr>`
+    }).join('')
+  } catch(e) { console.error(e) }
+}
+
+async function createStream() {
+  const isTds = document.getElementById('sn-tds').checked
+  const body = {
+    name: document.getElementById('sn-name').value.trim(),
+    target_url: isTds ? 'tds' : document.getElementById('sn-url').value.trim(),
+    category_id: document.getElementById('sn-cat').value || null,
+    tds_category_id: isTds ? (document.getElementById('sn-tds-cat').value || null) : null,
+    utm_source: document.getElementById('sn-source').value.trim(),
+    utm_medium: document.getElementById('sn-medium').value.trim(),
+    utm_campaign: document.getElementById('sn-campaign').value.trim()
+  }
+  const msg = document.getElementById('sn-msg')
+  if (!body.name) { showMsg(msg,'err','Название обязательно'); return }
+  if (!isTds && !body.target_url) { showMsg(msg,'err','Укажи URL'); return }
+  const r = await fetch(`${API}/stats/streams`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
+  const d = await r.json()
+  if (r.ok) { showMsg(msg,'ok',`Создан! Ссылка: ${API}/track/${d.id}`); loadStreams() }
+  else showMsg(msg,'err',d.error||'Ошибка')
+}
+
+async function bulkCreateStreams() {
+  const names = document.getElementById('bs-names').value.trim().split('\n').filter(Boolean)
+  const isTds = document.getElementById('bs-tds').checked
+  const url = isTds ? 'tds' : document.getElementById('bs-url').value.trim()
+  const msg = document.getElementById('bs-msg')
+  if (!names.length) { showMsg(msg,'err','Список пустой'); return }
+  if (!isTds && !url) { showMsg(msg,'err','Укажи URL'); return }
+  let ok = 0
+  for (const name of names) {
+    const body = {
+      name: name.trim(), target_url: url,
+      category_id: document.getElementById('bs-cat').value || null,
+      tds_category_id: isTds ? (document.getElementById('bs-tds-cat').value || null) : null,
+      utm_source: document.getElementById('bs-source').value.trim(),
+      utm_medium: document.getElementById('bs-medium').value.trim(),
+      utm_campaign: document.getElementById('bs-campaign').value.trim()
+    }
+    const r = await fetch(`${API}/stats/streams`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
+    if (r.ok) ok++
+  }
+  showMsg(msg,'ok',`Создано ${ok} из ${names.length} потоков`)
+  loadStreams()
+}
+
+function editStream(s) {
+  document.getElementById('es-id').value = s.id
+  document.getElementById('es-name').value = s.name
+  document.getElementById('es-url').value = s.target_url||''
+  document.getElementById('es-source').value = s.utm_source||''
+  document.getElementById('es-medium').value = s.utm_medium||''
+  document.getElementById('es-campaign').value = s.utm_campaign||''
+  const isTds = !!s.tds_category_id
+  document.getElementById('es-tds').checked = isTds
+  toggleTdsMode('es')
+  openModal('modal-edit-stream')
+  setTimeout(() => {
+    document.getElementById('es-cat').value = s.category_id||''
+    document.getElementById('es-tds-cat').value = s.tds_category_id||''
+  }, 150)
+}
+
+async function saveStream() {
+  const id = document.getElementById('es-id').value
+  const isTds = document.getElementById('es-tds').checked
+  const body = {
+    name: document.getElementById('es-name').value.trim(),
+    target_url: isTds ? 'tds' : document.getElementById('es-url').value.trim(),
+    category_id: document.getElementById('es-cat').value || null,
+    tds_category_id: isTds ? (document.getElementById('es-tds-cat').value || null) : null,
+    utm_source: document.getElementById('es-source').value.trim(),
+    utm_medium: document.getElementById('es-medium').value.trim(),
+    utm_campaign: document.getElementById('es-campaign').value.trim()
+  }
+  const msg = document.getElementById('es-msg')
+  const r = await fetch(`${API}/stats/streams/${id}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
+  if (r.ok) { showMsg(msg,'ok','Сохранено'); loadStreams() }
+  else showMsg(msg,'err','Ошибка')
+}
+
+async function deleteStream(id, name) {
+  if (!confirm(`Удалить поток "${name}"?`)) return
+  await fetch(`${API}/stats/streams/${id}`,{method:'DELETE'})
+  toast('Удалено')
+  loadStreams()
+}
+
+// CREATIVES
+async function loadCreatives() {
+  try {
+    const [creatives, stats] = await Promise.all([
+      fetch(`${API}/creatives`).then(r => r.json()),
+      fetch(`${API}/stats/creatives-stats`).then(r => r.json())
+    ])
+    const statsMap = {}
+    stats.forEach(s => statsMap[s.id] = s)
+    const tbody = document.getElementById('creatives-table')
+    if (!creatives.length) { tbody.innerHTML = `<tr><td colspan="9" class="empty">Нет креативов</td></tr>`; return }
+    tbody.innerHTML = creatives.map(c => {
+      const s = statsMap[c.id] || {}
+      const catName = allCategories.find(cat => cat.id == c.category_id)?.name || '—'
+      const link = `${API}/creative/${c.id}`
+      return `<tr>
+        <td class="text-muted">${c.id}</td>
+        <td>${c.name}</td>
+        <td class="text-muted">${catName}</td>
+        <td class="text-accent">${s.total_clicks||0}</td>
+        <td style="color:var(--blue)">${s.real_clicks||0}</td>
+        <td>${s.total_leads||0}</td>
+        <td class="text-yellow">$${(s.total_payout||0).toFixed(2)}</td>
+        <td><button class="copy-btn" onclick="copyText('${c.target_url}')">URL ⎘</button></td>
+        <td><button class="btn-icon del" onclick="deleteCreative(${c.id})">✕</button></td>
+      </tr>`
+    }).join('')
+  } catch(e) { console.error(e) }
+}
+
+async function createCreative() {
+  const body = {
+    name: document.getElementById('cr-name').value.trim() || 'Крео #'+Date.now(),
+    target_url: document.getElementById('cr-url').value.trim(),
+    category_id: document.getElementById('cr-cat').value || null,
+    utm_source: document.getElementById('cr-source').value.trim(),
+    utm_medium: document.getElementById('cr-medium').value.trim(),
+    utm_campaign: document.getElementById('cr-campaign').value.trim()
+  }
+  const msg = document.getElementById('cr-msg')
+  if (!body.target_url) { showMsg(msg,'err','URL обязателен'); return }
+  const r = await fetch(`${API}/creatives`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
+  if (r.ok) { showMsg(msg,'ok','Добавлен'); loadCreatives() }
+  else showMsg(msg,'err','Ошибка')
+}
+
+async function bulkCreateCreatives() {
+  const lines = document.getElementById('bc-list').value.trim().split('\n').filter(Boolean)
+  const msg = document.getElementById('bc-msg')
+  if (!lines.length) { showMsg(msg,'err','Список пустой'); return }
+  let ok = 0
+  for (let i = 0; i < lines.length; i++) {
+    const parts = lines[i].split(';')
+    const url = parts[0].trim()
+    const name = parts[1]?.trim() || `Крео #${i+1}`
+    if (!url) continue
+    const r = await fetch(`${API}/creatives`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,target_url:url,category_id:document.getElementById('bc-cat').value||null})})
+    if (r.ok) ok++
+  }
+  showMsg(msg,'ok',`Создано ${ok} из ${lines.length}`)
+  loadCreatives()
+}
+
+async function deleteCreative(id) {
+  if (!confirm('Удалить креатив?')) return
+  await fetch(`${API}/creatives/${id}`,{method:'DELETE'})
+  toast('Удалено')
+  loadCreatives()
+}
+
+// CATEGORIES
+async function loadCategories() {
+  try {
+    const cats = await fetch(`${API}/categories`).then(r => r.json())
+    allCategories = cats
+    function renderCats(tbodyId, arr) {
+      const tbody = document.getElementById(tbodyId)
+      if (!arr.length) { tbody.innerHTML = `<tr><td colspan="3" class="empty">Нет категорий</td></tr>`; return }
+      tbody.innerHTML = arr.map(c => `<tr><td>${c.name}</td><td class="text-muted">${fmt(c.created_at)}</td><td><button class="btn-icon del" onclick="deleteCategory(${c.id},'${c.name.replace(/'/g,"\\'")}')">✕</button></td></tr>`).join('')
+    }
+    renderCats('cat-group-table', cats.filter(c => c.type==='group'))
+    renderCats('cat-creative-table', cats.filter(c => c.type==='creative'))
+  } catch(e) {}
+}
+
+async function createCategory() {
+  const name = document.getElementById('cat-name').value.trim()
+  const type = document.getElementById('cat-type').value
+  const msg = document.getElementById('cat-msg')
+  if (!name) { showMsg(msg,'err','Название обязательно'); return }
+  const r = await fetch(`${API}/categories`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,type})})
+  if (r.ok) { showMsg(msg,'ok','Создана'); loadCategories() }
+  else showMsg(msg,'err','Ошибка')
+}
+
+async function deleteCategory(id, name) {
+  if (!confirm(`Удалить категорию "${name}"?`)) return
+  await fetch(`${API}/categories/${id}`,{method:'DELETE'})
+  toast('Удалено')
+  loadCategories()
+}
+
+// SETTINGS
+function loadSettings() {
+  document.getElementById('postback-url').textContent = `${API}/postback?click_id={click_id}&payout={payout}&status={status}`
+  renderSignatures()
+}
+
+function renderSignatures() {
+  const tbody = document.getElementById('sig-table')
+  if (!signatures.length) { tbody.innerHTML = `<tr><td colspan="3" class="empty">Нет сигнатур</td></tr>`; return }
+  tbody.innerHTML = signatures.map((s,i) => `<tr><td><code style="color:var(--accent)">${s.value}</code></td><td class="text-muted">${s.type==='ua'?'User-Agent':'IP'}</td><td><button class="btn-icon del" onclick="removeSignature(${i})">✕</button></td></tr>`).join('')
+}
+
+function addSignature() {
+  const value = document.getElementById('sig-value').value.trim().toLowerCase()
+  const type = document.getElementById('sig-type').value
+  if (!value) return
+  signatures.push({value,type})
+  localStorage.setItem('bot_signatures', JSON.stringify(signatures))
+  toast('Сигнатура добавлена')
+  closeModal('modal-signature')
+  renderSignatures()
+}
+
+function removeSignature(i) {
+  signatures.splice(i,1)
+  localStorage.setItem('bot_signatures', JSON.stringify(signatures))
+  renderSignatures()
+}
+
+loadDashboard()
+</script>
+</body>
+</html>
