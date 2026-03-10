@@ -726,6 +726,8 @@ async function loadLeadsLog() {
 // STREAMS
 async function loadStreams() {
   try {
+    const s = await fetch(`${API}/stats/settings`).then(r => r.json())
+    currentDomain = s.domain || ''
     const streams = await fetch(`${API}/stats/streams`).then(r => r.json())
     allStreams = streams
     await populateCategorySelects()
@@ -1027,7 +1029,14 @@ function removeSignature(i) {
   renderSignatures()
 }
 
-loadDashboard()
+async function init() {
+  try {
+    const s = await fetch(`${API}/stats/settings`).then(r => r.json())
+    currentDomain = s.domain || ''
+  } catch(e) {}
+  loadDashboard()
+}
+init()
 </script>
 </body>
 </html>
